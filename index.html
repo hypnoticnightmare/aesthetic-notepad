@@ -3,32 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notepad XP Luna Edition</title>
+    <title>Notepad XP/Retro Mix Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         :root {
             --page-bg: #FFFFFF; 
             
-            /* Palette Rosa (Default) adattata allo stile XP */
+            /* Palette Rosa (Default) */
             --win-frame: #A03050;      /* Bordo esterno scuro */
             --title-bg-start: #FFDDEE; /* Sfumatura titolo (alto) */
-            --title-bg-end: #F4AABF;   /* Sfumatura titolo (basso) - Colore principale XP Luna Pink */
-            --title-text: #FFFFFF;
+            --title-bg-end: #F4AABF;   /* Sfumatura titolo (basso) */
+            --title-text: #000000;
             
             --sys-bg: #F0BBD0;         /* Sfondo menù e finestra */
             --text-bg: #FFF0F5;        /* Sfondo foglio */
             --text-color: #000000;
             
-            --border-dark: #888888;
+            --border-dark: #000000;
             --border-light: #ffffff;
+            --border-shadow: #888888;
             --highlight: #2151DC;     /* Blu classico selezione XP */
             --highlight-text: #ffffff;
-            
-            /* Colori pulsanti XP */
-            --btn-close: #E81123;
-            --btn-close-hover: #F1707A;
-            --btn-minmax: #4B79DC;
-            --btn-minmax-hover: #809FDF;
         }
 
         /* --- Sfondo di Notion --- */
@@ -39,7 +34,7 @@
         }
         [data-mode="beige"] { --page-bg: #F7F6F3; }
 
-        /* --- Palette Colori Dinamiche (XP Style) --- */
+        /* --- Palette Colori Dinamiche --- */
         [data-palette="pink"] {
             --title-bg-start: #FFDDEE; --title-bg-end: #F4AABF; --sys-bg: #F0BBD0; --text-bg: #FFF0F5;
         }
@@ -48,7 +43,6 @@
             --win-frame: #30A050;
         }
         [data-palette="blue"] {
-            /* Colori XP Luna classici */
             --title-bg-start: #DDEEFF; --title-bg-end: #AABFF4; --sys-bg: #BBCCF0; --text-bg: #F0F5FF;
             --win-frame: #3050A0;
         }
@@ -73,70 +67,60 @@
 
         * { box-sizing: border-box; }
 
-        /* --- LA FINESTRA XP LUNA --- */
+        /* --- LA FINESTRA PRINCIPALE (Curve XP) --- */
         .window {
             width: 100%; height: 100%;
             background-color: var(--sys-bg);
             border: 3px solid var(--win-frame);
-            /* Angoli arrotondati superiori (marchio XP) */
+            /* Angoli arrotondati superiori morbidi */
             border-radius: 8px 8px 0 0;
-            /* Ombra morbida moderna */
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: flex; flex-direction: column;
-            overflow: hidden; /* Mantiene la forma arrotondata */
+            /* RIMOSSO overflow: hidden; PERCHÉ BLOCCAVA I MENÙ! */
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        /* --- BARRA DEL TITOLO (Bubbly XP Style) --- */
+        /* --- BARRA DEL TITOLO (Sfumata) --- */
         .title-bar {
             display: flex; justify-content: space-between; align-items: center;
             height: 30px; padding: 0 8px;
-            /* Sfumatura lucida XP */
             background: linear-gradient(to bottom, var(--title-bg-start) 0%, var(--title-bg-end) 50%, var(--title-bg-end) 100%);
             border-bottom: 1px solid var(--win-frame);
+            /* Arrotonda anche l'intestazione per seguire la finestra */
+            border-radius: 5px 5px 0 0; 
         }
         
         .sys-icon-box {
             width: 22px; height: 22px;
             display: flex; justify-content: center; align-items: center;
         }
-        /* Icona Notepad stilizzata XP */
         .sys-icon-inner { 
             width: 16px; height: 16px; 
             background: linear-gradient(135deg, #fff 0%, #dcdcdc 100%);
             border: 1px solid #888; border-radius: 2px;
         }
 
-        /* Font del Titolo (Arial pulito come richiesto) */
         .title-text {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 14px; font-weight: bold;
             color: var(--title-text);
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
             flex-grow: 1; text-align: center;
         }
 
-        /* Pulsanti Finestra XP (Rotondi) */
-        .window-btns { display: flex; gap: 4px; }
+        /* --- PULSANTI FINESTRA (Ripristinati a stile Retro Quadrato!) --- */
+        .window-btns { display: flex; gap: 2px; }
         .win-btn {
-            width: 22px; height: 22px;
-            border-radius: 50%; /* Rotondi */
-            border: 2px solid #FFF;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            width: 20px; height: 20px;
+            border: 2px solid var(--border-dark);
+            background-color: var(--sys-bg);
             display: flex; justify-content: center; align-items: center; cursor: pointer;
-            transition: background-color 0.1s;
+            box-shadow: inset 1px 1px var(--border-light);
+            color: var(--border-dark);
         }
-        
-        /* Riduci e Ingrandisci (Blu) */
-        .btn-min, .btn-max { background-color: var(--btn-minmax); color: #FFF; }
-        .btn-min:hover, .btn-max:hover { background-color: var(--btn-minmax-hover); }
-        .icon-min { width: 10px; height: 3px; background: currentColor; margin-top: 10px; border-radius: 1px; }
-        .icon-max { width: 10px; height: 9px; border: 2px solid currentColor; border-radius: 1px; }
-
-        /* Chiudi (Rosso) */
-        .btn-close { background-color: var(--btn-close); color: #FFF; font-weight: bold; }
-        .btn-close:hover { background-color: var(--btn-close-hover); }
-        .icon-close { font-family: sans-serif; font-size: 16px; line-height: 1; margin-bottom: 2px; }
+        .win-btn:active { background-color: var(--border-dark); color: var(--border-light); box-shadow: none; }
+        .icon-min { width: 8px; height: 2px; background: currentColor; margin-top: 8px; }
+        .icon-max { width: 10px; height: 8px; border: 2px solid currentColor; border-top-width: 3px; }
+        .icon-close { font-family: sans-serif; font-size: 16px; line-height: 1; margin-bottom: 2px; font-weight: bold; }
 
         /* --- BARRA DEI MENÙ --- */
         .menu-bar {
@@ -148,7 +132,7 @@
         
         .menu-item {
             padding: 1px 8px; cursor: pointer; user-select: none;
-            border-radius: 2px; /* Leggermente smussati */
+            border-radius: 2px; position: relative;
         }
         .menu-item:hover, .menu-item.active { 
             background-color: var(--highlight); 
@@ -162,7 +146,7 @@
             border: 1px solid var(--border-shadow);
             z-index: 100; color: #000; padding: 2px;
             border-radius: 2px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Ombra morbida moderna */
         }
         .menu-item.active .dropdown { display: flex; flex-direction: column; }
         
@@ -186,12 +170,13 @@
         .window-body {
             flex-grow: 1; padding: 4px; display: flex;
             background-color: var(--sys-bg);
+            /* Importante per non far strabordare l'area di testo */
+            overflow: hidden; 
         }
         .textarea-container {
             flex-grow: 1; border: 1px solid var(--border-shadow);
             background-color: var(--text-bg);
             display: flex;
-            /* Area di testo leggermente arrotondata all'interno */
             border-radius: 2px; 
             overflow: hidden;
         }
@@ -200,26 +185,23 @@
             flex-grow: 1; resize: none; box-sizing: border-box;
             background-color: transparent; 
             color: var(--text-color);
-            font-size: 24px; line-height: 1.2;
             padding: 10px; outline: none; border: none;
         }
         
-        /* --- Gestione Font Area Testo --- */
+        /* Gestione Font Area Testo */
         [data-font="pixel"] textarea { font-family: 'VT323', monospace; font-size: 26px; }
         [data-font="arial"] textarea { font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.5; }
 
-        /* --- SCROLLBAR XP Style (Bubbly) --- */
+        /* --- SCROLLBAR XP Style --- */
         textarea::-webkit-scrollbar { width: 18px; background: #E1E1E1; }
         textarea::-webkit-scrollbar-track { background: #E1E1E1; border-left: 1px solid #BFBFBF; }
         
         textarea::-webkit-scrollbar-thumb { 
-            /* Cursore scorrimento colorato e arrotondato */
             background: linear-gradient(to right, #FFF 0%, var(--title-bg-end) 50%, var(--title-bg-end) 100%);
             border: 1px solid var(--win-frame);
             border-radius: 9px;
         }
         
-        /* Frecce su/giù arrotondate */
         textarea::-webkit-scrollbar-button { 
             display: block; height: 18px; 
             background-color: #E1E1E1;
@@ -241,11 +223,11 @@
     <div class="window">
         <div class="title-bar">
             <div class="sys-icon-box"><div class="sys-icon-inner"></div></div>
-            <div class="title-text">Nota Rapida - 4.1 XP Edition</div>
+            <div class="title-text">Nota Rapida - 4.1 Mix Edition</div>
             <div class="window-btns">
-                <div class="win-btn btn-min"><div class="icon-min"></div></div>
-                <div class="win-btn btn-max"><div class="icon-max"></div></div>
-                <div class="win-btn btn-close"><div class="icon-close">x</div></div>
+                <div class="win-btn"><div class="icon-min"></div></div>
+                <div class="win-btn"><div class="icon-max"></div></div>
+                <div class="win-btn"><div class="icon-close">x</div></div>
             </div>
         </div>
 
@@ -280,16 +262,16 @@
                     <div class="dropdown-item" onclick="setNotionMode('dark')"><span class="menu-icon">🌙</span> Notte</div>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" onclick="setThemePalette('pink')">
-                        <span class="color-preview" style="background-color: #EBA8BB;"></span> Tema Rosa
+                        <span class="color-preview" style="background-color: #F0BBD0;"></span> Tema Rosa
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('purple')">
-                        <span class="color-preview" style="background-color: #D4A8EB;"></span> Tema Viola
+                        <span class="color-preview" style="background-color: #CCBBF0;"></span> Tema Viola
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('blue')">
-                        <span class="color-preview" style="background-color: #A8BEEB;"></span> Tema Blu
+                        <span class="color-preview" style="background-color: #BBCCF0;"></span> Tema Blu
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('green')">
-                        <span class="color-preview" style="background-color: #A8EBA8;"></span> Tema Verde
+                        <span class="color-preview" style="background-color: #BBF0BF;"></span> Tema Verde
                     </div>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" onclick="setTextFont('pixel')"><span class="menu-icon">A</span> Font: Pixel</div>
@@ -299,7 +281,7 @@
 
             <div class="menu-item" onclick="toggleMenu(event, 'help')">Help
                 <div class="dropdown" id="dropdown-help">
-                    <div class="dropdown-item" onclick="alert('Notepad XP Edition - Curvato!\nDati salvati localmente.')"><span class="menu-icon">❓</span> About</div>
+                    <div class="dropdown-item" onclick="alert('Notepad Retro-Modern Mix\nDati salvati localmente.')"><span class="menu-icon">❓</span> About</div>
                 </div>
             </div>
         </div>
@@ -315,29 +297,28 @@
         const textarea = document.getElementById('notepad-text');
 
         // --- SALVATAGGIO TESTO LOCALE ---
-        textarea.value = localStorage.getItem('notion-xp-notepad-v4') || '';
+        textarea.value = localStorage.getItem('notion-xp-notepad-v5') || '';
         textarea.addEventListener('input', () => {
-            localStorage.setItem('notion-xp-notepad-v4', textarea.value);
+            localStorage.setItem('notion-xp-notepad-v5', textarea.value);
         });
 
         // --- GESTIONE PREFERENZE GRAFICHE E FONT ---
         function setNotionMode(mode) {
             document.body.setAttribute('data-mode', mode);
-            localStorage.setItem('notion-notepad-mode-v4', mode);
+            localStorage.setItem('notion-notepad-mode-v5', mode);
         }
         function setThemePalette(palette) {
             document.body.setAttribute('data-palette', palette);
-            localStorage.setItem('notion-notepad-palette-v4', palette);
+            localStorage.setItem('notion-notepad-palette-v5', palette);
         }
         function setTextFont(fontType) {
             document.body.setAttribute('data-font', fontType);
-            localStorage.setItem('notion-notepad-font-v4', fontType);
+            localStorage.setItem('notion-notepad-font-v5', fontType);
         }
 
-        // Caricamento in fase di avvio
-        setNotionMode(localStorage.getItem('notion-notepad-mode-v4') || 'light');
-        setThemePalette(localStorage.getItem('notion-notepad-palette-v4') || 'pink');
-        setTextFont(localStorage.getItem('notion-notepad-font-v4') || 'pixel');
+        setNotionMode(localStorage.getItem('notion-notepad-mode-v5') || 'light');
+        setThemePalette(localStorage.getItem('notion-notepad-palette-v5') || 'pink');
+        setTextFont(localStorage.getItem('notion-notepad-font-v5') || 'pixel');
 
         // --- LOGICA DI APERTURA E CHIUSURA MENÙ ---
         function toggleMenu(event, menuName) {
@@ -358,7 +339,7 @@
                 case 'new':
                     if(confirm("Sei sicuro di voler svuotare il blocco note?")) {
                         textarea.value = '';
-                        localStorage.setItem('notion-xp-notepad-v4', '');
+                        localStorage.setItem('notion-xp-notepad-v5', '');
                     }
                     break;
                 case 'save':
@@ -368,7 +349,6 @@
                     anchor.href = window.URL.createObjectURL(blob);
                     anchor.click();
                     break;
-                // Richieste: Undo e Redo
                 case 'undo':
                     document.execCommand('undo'); 
                     break;
@@ -390,7 +370,7 @@
                         const start = textarea.selectionStart;
                         const end = textarea.selectionEnd;
                         textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
-                        localStorage.setItem('notion-xp-notepad-v4', textarea.value);
+                        localStorage.setItem('notion-xp-notepad-v5', textarea.value);
                     } catch (err) {
                         alert("Usa la scorciatoia Ctrl+V (o Cmd+V) per incollare.");
                     }
@@ -408,7 +388,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 textarea.value = e.target.result;
-                localStorage.setItem('notion-xp-notepad-v4', textarea.value);
+                localStorage.setItem('notion-xp-notepad-v5', textarea.value);
             };
             reader.readAsText(file);
             event.target.value = ''; 
