@@ -3,51 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Notepad</title>
+    <title>Retro Win 3.1 Notepad</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         :root {
             /* Sfondo di Notion */
             --page-bg: #FFFFFF; 
             
-            /* Colori esatti campionati dalla tua immagine (Tema Rosa Default) */
-            --title-bg: #E49CB2;      /* Rosa scuro barra del titolo */
-            --menu-bg: #EBB6C6;       /* Rosa medio per menù e bordi */
-            --text-bg: #FBE5EC;       /* Rosa chiarissimo per il foglio */
-            --scroll-thumb: #D387A3;  /* Rosa scuro per la barra di scorrimento */
-            
+            /* Colori esatti campionati (Tema Rosa) */
+            --menu-bg: #e89eb4;       /* Rosa medio (finestra e menù) */
+            --text-bg: #fae3ea;       /* Rosa chiarissimo (area di testo) */
+            --highlight: #000000;     /* Selezione nera */
+            --highlight-text: #FFFFFF;/* Testo bianco su selezione */
             --border-color: #000000;
-            --text-color: #000000;
+            --bevel-light: #ffffff;   /* Luce del finto 3D */
         }
 
         /* --- SFONDI NOTION --- */
         [data-mode="dark"] {
             --page-bg: #191919;
-            /* In dark mode scurisci il testo e il foglio per non accecare */
             --text-bg: #2a1a20; 
-            --text-color: #f0f0f0;
-            --border-color: #000; 
+            --highlight: #ffffff;
+            --highlight-text: #000000;
         }
         [data-mode="beige"] { --page-bg: #F7F6F3; }
 
-        /* --- PALETTE COLORI (Generati con la stessa logica di contrasto) --- */
+        /* --- PALETTE COLORI --- */
         [data-palette="pink"] {
-            --title-bg: #E49CB2; --menu-bg: #EBB6C6; --text-bg: #FBE5EC; --scroll-thumb: #D387A3;
+            --menu-bg: #e89eb4; --text-bg: #fae3ea;
         }
         [data-palette="green"] {
-            --title-bg: #9CE4A5; --menu-bg: #B6EBC0; --text-bg: #E5FBE9; --scroll-thumb: #87D397;
+            --menu-bg: #9ce8b4; --text-bg: #e3faea;
         }
         [data-palette="blue"] {
-            --title-bg: #9CA8E4; --menu-bg: #B6BFEB; --text-bg: #E5E9FB; --scroll-thumb: #879AD3;
+            --menu-bg: #9eb4e8; --text-bg: #e3eafa;
         }
         [data-palette="purple"] {
-            --title-bg: #C19CE4; --menu-bg: #D4B6EB; --text-bg: #F2E5FB; --scroll-thumb: #B187D3;
+            --menu-bg: #b49ee8; --text-bg: #eae3fa;
         }
         
-        /* Adattamenti Dark Mode per i nuovi colori */
-        [data-mode="dark"][data-palette="green"] { --text-bg: #1a2a1a; }
-        [data-mode="dark"][data-palette="blue"] { --text-bg: #1a1e2a; }
-        [data-mode="dark"][data-palette="purple"] { --text-bg: #261a2a; }
+        /* Correzione Testo Dark Mode */
+        [data-mode="dark"][data-palette="green"] { --text-bg: #1a2a20; }
+        [data-mode="dark"][data-palette="blue"] { --text-bg: #1a202a; }
+        [data-mode="dark"][data-palette="purple"] { --text-bg: #201a2a; }
 
         body, html {
             margin: 0; padding: 10px;
@@ -67,132 +65,151 @@
             width: 100%; height: 100%;
             background-color: var(--menu-bg);
             border: 2px solid var(--border-color);
+            /* Bordo luce 3D interno */
+            box-shadow: inset 1px 1px var(--bevel-light);
             display: flex; flex-direction: column;
             transition: background-color 0.3s ease;
         }
 
         /* --- BARRA DEL TITOLO --- */
         .title-bar {
-            background-color: var(--title-bg);
-            color: var(--border-color);
-            padding: 2px;
+            padding: 4px;
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 2px solid var(--border-color);
-            height: 28px;
         }
         
-        /* Icona di sistema a sinistra */
+        /* Bottone Sistema (Quadrato a sinistra) */
         .sys-btn {
-            width: 20px; height: 20px;
+            width: 22px; height: 22px;
             border: 2px solid var(--border-color);
             background-color: var(--menu-bg);
+            box-shadow: inset 1px 1px var(--bevel-light);
             display: flex; justify-content: center; align-items: center;
-            margin-left: 2px;
         }
-        .sys-line { width: 10px; height: 2px; background-color: var(--border-color); }
+        .sys-line { width: 12px; height: 3px; background-color: var(--border-color); }
         
         .title-text {
-            font-size: 22px; font-weight: bold; letter-spacing: 0.5px;
-            flex-grow: 1; text-align: center; margin-top: 2px;
+            font-size: 24px; letter-spacing: 1px;
+            flex-grow: 1; text-align: center; color: var(--border-color);
         }
         
-        /* Controlli finestra a destra */
-        .window-btns { display: flex; gap: 2px; margin-right: 2px; }
+        /* Bottoni Destri (Min, Max, Close) */
+        .window-btns { display: flex; gap: 2px; }
         .win-btn {
-            width: 20px; height: 20px;
+            width: 22px; height: 22px;
             border: 2px solid var(--border-color);
             background-color: var(--menu-bg);
+            box-shadow: inset 1px 1px var(--bevel-light);
             display: flex; justify-content: center; align-items: center;
-            font-size: 18px; font-weight: bold; line-height: 1;
-            padding-bottom: 2px; cursor: pointer;
+            font-size: 20px; font-weight: bold; cursor: pointer;
         }
-        .win-btn:active { background-color: var(--border-color); color: var(--menu-bg); }
+        .win-btn:active { 
+            box-shadow: inset -1px -1px var(--bevel-light); /* Inverte la luce quando cliccato */
+        }
+        .icon-min { width: 10px; height: 2px; background: #000; margin-top: 8px;}
+        .icon-max { width: 12px; height: 10px; border: 2px solid #000; border-top-width: 3px; }
+        .icon-close { font-family: sans-serif; font-size: 16px; line-height: 1; margin-bottom: 2px;}
 
         /* --- BARRA DEI MENÙ --- */
         .menu-bar {
-            display: flex; gap: 2px; padding: 0 4px;
-            background-color: var(--menu-bg);
+            display: flex; padding-left: 2px;
             border-bottom: 2px solid var(--border-color);
             position: relative; z-index: 10;
         }
         
         .menu-item {
-            font-size: 22px; padding: 2px 6px;
+            font-size: 24px; padding: 2px 8px;
             cursor: pointer; position: relative; user-select: none;
             border: 2px solid transparent; 
-            margin-bottom: -2px; /* IL TRUCCO: Si sovrappone al bordo sottostante */
+            margin-bottom: -2px; /* Il trucco per scavalcare il bordo inferiore */
             z-index: 11;
         }
         
-        /* Effetto linguetta unita al menù a tendina */
+        /* Effetto linguetta unita alla tendina */
         .menu-item.active { 
             background-color: var(--menu-bg); 
             border: 2px solid var(--border-color);
-            border-bottom: 2px solid var(--menu-bg); /* Nasconde la linea di divisione */
+            border-bottom: 2px solid var(--menu-bg); /* Nasconde la linea! */
             z-index: 13;
         }
 
         /* --- TENDINE DEI MENÙ --- */
         .dropdown {
-            display: none; position: absolute; top: 100%; left: -2px;
-            background-color: var(--menu-bg); min-width: 180px;
+            display: none; position: absolute; top: calc(100% - 2px); left: -2px;
+            background-color: var(--menu-bg); min-width: 200px;
             border: 2px solid var(--border-color);
             z-index: 12; color: var(--border-color);
-            padding: 2px 0;
-            /* L'ombra piatta retrò */
-            box-shadow: 2px 2px 0px rgba(0,0,0,1);
+            padding: 2px;
+            /* Ombra Nera Solida Stile 8-bit */
+            box-shadow: 4px 4px 0px rgba(0,0,0,1);
         }
         .menu-item.active .dropdown { display: flex; flex-direction: column; }
         
         .dropdown-item {
-            padding: 2px 10px; font-size: 22px;
+            padding: 2px 10px; font-size: 24px;
             display: flex; align-items: center; gap: 8px;
         }
         .dropdown-item:hover { 
-            background-color: var(--border-color); 
-            color: var(--menu-bg); 
+            background-color: var(--highlight); 
+            color: var(--highlight-text); 
         }
         
-        /* Il separatore a linea singola nera */
+        /* Separatore menù */
         .dropdown-divider { 
             height: 2px; background-color: var(--border-color); 
-            margin: 2px 0; 
+            margin: 4px 2px; 
         }
 
+        /* Testo in grigio (Disabilitato) */
+        .disabled-text { color: #888; text-shadow: 1px 1px 0px #fff; }
+
         /* Icone e Quadrati per Anteprima Colori */
-        .menu-icon { width: 20px; text-align: center; display: inline-block; font-size: 18px; }
+        .menu-icon { width: 24px; text-align: center; display: inline-block; font-size: 18px; filter: grayscale(1); }
         .color-preview {
             width: 14px; height: 14px; border: 2px solid var(--border-color);
-            display: inline-block; margin-left: 2px; margin-right: 2px;
+            display: inline-block; margin-left: 2px; margin-right: 6px;
         }
 
         /* --- AREA DI TESTO --- */
         .window-body {
             flex-grow: 1; display: flex;
-            background-color: var(--menu-bg); padding: 2px;
+            background-color: var(--menu-bg); padding: 4px;
         }
         textarea {
             width: 100%; height: 100%; resize: none; box-sizing: border-box;
-            background-color: var(--text-bg); color: var(--text-color);
-            font-family: 'VT323', monospace; font-size: 24px; line-height: 1.2;
-            padding: 8px; outline: none; border: none;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--text-bg); 
+            color: var(--border-color);
+            font-family: 'VT323', monospace; font-size: 26px; line-height: 1.2;
+            padding: 10px; outline: none; 
+            border: 2px solid var(--border-color);
+            transition: background-color 0.3s ease;
         }
         
-        /* --- SCROLLBAR RETRO ESATTA --- */
+        /* --- SCROLLBAR RETRO VIA CODICE --- */
         textarea::-webkit-scrollbar { 
-            width: 22px; 
-            border-left: 2px solid var(--border-color); 
-            background: var(--text-bg); 
+            width: 24px; 
+            background: var(--menu-bg); 
+            border-left: 2px solid var(--border-color);
         }
+        /* Il cursore (Thumb) */
         textarea::-webkit-scrollbar-thumb { 
-            background: var(--scroll-thumb); 
-            border: 2px solid var(--border-color); 
+            background: var(--menu-bg); 
+            border-top: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
+            box-shadow: inset 1px 1px var(--bevel-light);
         }
-        textarea::-webkit-scrollbar-button { 
-            display: block; height: 20px; 
-            background-color: var(--menu-bg); 
-            border: 2px solid var(--border-color); 
+        /* I bottoni Su e Giù con i triangolini neri (Disegnati in SVG dentro il CSS) */
+        textarea::-webkit-scrollbar-button:vertical:start:decrement { 
+            display: block; height: 24px; 
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polygon points="1,8 9,8 5,2" fill="black"/></svg>') center no-repeat, var(--menu-bg); 
+            border-bottom: 2px solid var(--border-color); 
+            box-shadow: inset 1px 1px var(--bevel-light);
+        }
+        textarea::-webkit-scrollbar-button:vertical:end:increment { 
+            display: block; height: 24px; 
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polygon points="1,2 9,2 5,8" fill="black"/></svg>') center no-repeat, var(--menu-bg); 
+            border-top: 2px solid var(--border-color); 
+            box-shadow: inset 1px 1px var(--bevel-light);
         }
 
     </style>
@@ -204,9 +221,9 @@
             <div class="sys-btn"><div class="sys-line"></div></div>
             <div class="title-text">Nota Rapida - 4.1 Definitiva</div>
             <div class="window-btns">
-                <div class="win-btn">_</div>
-                <div class="win-btn">☐</div>
-                <div class="win-btn">×</div>
+                <div class="win-btn"><div class="icon-min"></div></div>
+                <div class="win-btn"><div class="icon-max"></div></div>
+                <div class="win-btn"><div class="icon-close">x</div></div>
             </div>
         </div>
 
@@ -224,7 +241,11 @@
             
             <div class="menu-item" onclick="toggleMenu(event, 'edit')">Edit
                 <div class="dropdown" id="dropdown-edit">
-                    <div class="dropdown-item" onclick="menuAction('copy')"><span class="menu-icon">📑</span> Copy</div>
+                    <div class="dropdown-item"><span class="menu-icon">↶</span> <span class="disabled-text">Undo</span></div>
+                    <div class="dropdown-item"><span class="menu-icon">↷</span> <span class="disabled-text">Redo</span></div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" onclick="menuAction('cut')"><span class="menu-icon">✂</span> Cut</div>
+                    <div class="dropdown-item" onclick="menuAction('copy')"><span class="menu-icon">📄</span> Copy</div>
                     <div class="dropdown-item" onclick="menuAction('paste')"><span class="menu-icon">📋</span> Paste</div>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" onclick="menuAction('select-all')"><span class="menu-icon">☑</span> Select All</div>
@@ -238,23 +259,23 @@
                     <div class="dropdown-item" onclick="setNotionMode('dark')"><span class="menu-icon">🌙</span> Notion Dark</div>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" onclick="setThemePalette('pink')">
-                        <span class="color-preview" style="background-color: #EBB6C6;"></span> Tema Rosa
+                        <span class="color-preview" style="background-color: #e89eb4;"></span> Rosa
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('purple')">
-                        <span class="color-preview" style="background-color: #D4B6EB;"></span> Tema Viola
+                        <span class="color-preview" style="background-color: #b49ee8;"></span> Viola
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('blue')">
-                        <span class="color-preview" style="background-color: #B6BFEB;"></span> Tema Blu
+                        <span class="color-preview" style="background-color: #9eb4e8;"></span> Blu
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('green')">
-                        <span class="color-preview" style="background-color: #B6EBC0;"></span> Tema Verde
+                        <span class="color-preview" style="background-color: #9ce8b4;"></span> Verde
                     </div>
                 </div>
             </div>
 
             <div class="menu-item" onclick="toggleMenu(event, 'help')">Help
                 <div class="dropdown" id="dropdown-help">
-                    <div class="dropdown-item" onclick="alert('Retro Notepad \nDati salvati localmente.')"><span class="menu-icon">❓</span> About</div>
+                    <div class="dropdown-item" onclick="alert('Retro Windows 3.1 Notepad\nDati salvati localmente.\nNessun PNG usato!')"><span class="menu-icon">❓</span> About</div>
                 </div>
             </div>
 
@@ -269,24 +290,23 @@
         const textarea = document.getElementById('notepad-text');
 
         // --- GESTIONE DATI LOCALI ---
-        textarea.value = localStorage.getItem('notion-retro-notepad-v2') || '';
+        textarea.value = localStorage.getItem('notion-win31-notepad') || '';
         textarea.addEventListener('input', () => {
-            localStorage.setItem('notion-retro-notepad-v2', textarea.value);
+            localStorage.setItem('notion-win31-notepad', textarea.value);
         });
 
         // --- GESTIONE TEMI E MODALITÀ ---
         function setNotionMode(mode) {
             document.body.setAttribute('data-mode', mode);
-            localStorage.setItem('notion-notepad-mode-v2', mode);
+            localStorage.setItem('notion-win31-mode', mode);
         }
         function setThemePalette(palette) {
             document.body.setAttribute('data-palette', palette);
-            localStorage.setItem('notion-notepad-palette-v2', palette);
+            localStorage.setItem('notion-win31-palette', palette);
         }
 
-        // Caricamento preferenze
-        setNotionMode(localStorage.getItem('notion-notepad-mode-v2') || 'light');
-        setThemePalette(localStorage.getItem('notion-notepad-palette-v2') || 'pink');
+        setNotionMode(localStorage.getItem('notion-win31-mode') || 'light');
+        setThemePalette(localStorage.getItem('notion-win31-palette') || 'pink');
 
         // --- GESTIONE MENÙ A TENDINA ---
         function toggleMenu(event, menuName) {
@@ -301,13 +321,13 @@
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
         }
 
-        // --- FUNZIONI DEI MENÙ FILE ED EDIT ---
+        // --- FUNZIONI DEI MENÙ ---
         async function menuAction(action) {
             switch(action) {
                 case 'new':
                     if(confirm("Vuoi cancellare tutto il testo?")) {
                         textarea.value = '';
-                        localStorage.setItem('notion-retro-notepad-v2', '');
+                        localStorage.setItem('notion-win31-notepad', '');
                     }
                     break;
                 case 'save':
@@ -316,6 +336,10 @@
                     anchor.download = 'Nota_Rapida.txt';
                     anchor.href = window.URL.createObjectURL(blob);
                     anchor.click();
+                    break;
+                case 'cut':
+                    textarea.select();
+                    document.execCommand('cut');
                     break;
                 case 'copy':
                     textarea.select();
@@ -328,7 +352,7 @@
                         const start = textarea.selectionStart;
                         const end = textarea.selectionEnd;
                         textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
-                        localStorage.setItem('notion-retro-notepad-v2', textarea.value);
+                        localStorage.setItem('notion-win31-notepad', textarea.value);
                     } catch (err) {
                         alert("Usa la scorciatoia Ctrl+V (o Cmd+V) per incollare.");
                     }
@@ -346,10 +370,10 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 textarea.value = e.target.result;
-                localStorage.setItem('notion-retro-notepad-v2', textarea.value);
+                localStorage.setItem('notion-win31-notepad', textarea.value);
             };
             reader.readAsText(file);
-            event.target.value = ''; // Resetta input
+            event.target.value = ''; 
         }
     </script>
 </body>
