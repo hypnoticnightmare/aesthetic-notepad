@@ -6,6 +6,14 @@
     <title>Notepad XP/Retro - Rich Text Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Caveat:wght@500&display=swap" rel="stylesheet">
     <style>
+        /* SCUDO ANTI-FILTRI DEL BROWSER */
+        :root, html, body {
+            color-scheme: light !important;
+            forced-color-adjust: none !important;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
         :root {
             --page-bg: #FFFFFF; 
             
@@ -95,6 +103,10 @@
             width: 16px; height: 16px; 
             background: linear-gradient(135deg, #fff 0%, #dcdcdc 100%);
             border: 1px solid #888; border-radius: 2px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges"><path fill="%23000" d="M2,2 h12 v10 h-12 z M4,12 h8 v2 h-8 z"/><path fill="%23EFEFEF" d="M3,3 h10 v8 h-10 z M5,13 h6 v1 h-6 z"/><path fill="%23111" d="M4,4 h8 v5 h-8 z"/><path fill="%23000" d="M10,10 h2 v1 h-2 z"/><path fill="%23FF3366" d="M6,5 h1 v1 h-1 z M9,5 h1 v1 h-1 z M5,6 h6 v1 h-6 z M6,7 h4 v1 h-4 z M7,8 h2 v1 h-2 z"/></svg>');
+            background-size: 12px;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .title-text {
@@ -176,7 +188,6 @@
             overflow: hidden;
         }
 
-        /* Trasformato in un contenteditable div per permettere Grassetto/Corsivo */
         #notepad-text {
             flex-grow: 1; box-sizing: border-box;
             background-color: transparent; 
@@ -187,7 +198,6 @@
             word-wrap: break-word;
         }
         
-        /* Placeholder per il div modificabile */
         #notepad-text:empty:before {
             content: attr(data-placeholder);
             color: var(--border-shadow);
@@ -195,7 +205,6 @@
             display: block;
         }
         
-        /* Gestione Font Area Testo */
         [data-font="pixel"] #notepad-text { font-family: 'VT323', monospace; font-size: 26px; }
         [data-font="arial"] #notepad-text { font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.5; }
         [data-font="aesthetic"] #notepad-text { font-family: 'Caveat', cursive; font-size: 26px; line-height: 1.2; }
@@ -318,28 +327,28 @@
         const editor = document.getElementById('notepad-text');
 
         // --- SALVATAGGIO TESTO LOCALE (Formattazione HTML) ---
-        editor.innerHTML = localStorage.getItem('notion-xp-richtext-v8') || '';
+        editor.innerHTML = localStorage.getItem('notion-xp-richtext-v9') || '';
         editor.addEventListener('input', () => {
-            localStorage.setItem('notion-xp-richtext-v8', editor.innerHTML);
+            localStorage.setItem('notion-xp-richtext-v9', editor.innerHTML);
         });
 
         // --- GESTIONE PREFERENZE ---
         function setNotionMode(mode) {
             document.body.setAttribute('data-mode', mode);
-            localStorage.setItem('notion-notepad-mode-v8', mode);
+            localStorage.setItem('notion-notepad-mode-v9', mode);
         }
         function setThemePalette(palette) {
             document.body.setAttribute('data-palette', palette);
-            localStorage.setItem('notion-notepad-palette-v8', palette);
+            localStorage.setItem('notion-notepad-palette-v9', palette);
         }
         function setTextFont(fontType) {
             document.body.setAttribute('data-font', fontType);
-            localStorage.setItem('notion-notepad-font-v8', fontType);
+            localStorage.setItem('notion-notepad-font-v9', fontType);
         }
 
-        setNotionMode(localStorage.getItem('notion-notepad-mode-v8') || 'light');
-        setThemePalette(localStorage.getItem('notion-notepad-palette-v8') || 'pink');
-        setTextFont(localStorage.getItem('notion-notepad-font-v8') || 'pixel');
+        setNotionMode(localStorage.getItem('notion-notepad-mode-v9') || 'light');
+        setThemePalette(localStorage.getItem('notion-notepad-palette-v9') || 'pink');
+        setTextFont(localStorage.getItem('notion-notepad-font-v9') || 'pixel');
 
         // --- LOGICA MENÙ ---
         function toggleMenu(event, menuName) {
@@ -362,7 +371,7 @@
                 case 'new':
                     if(confirm("Sei sicuro di voler svuotare il blocco note?")) {
                         editor.innerHTML = '';
-                        localStorage.setItem('notion-xp-richtext-v8', '');
+                        localStorage.setItem('notion-xp-richtext-v9', '');
                     }
                     break;
                 case 'save':
@@ -406,7 +415,7 @@
                     document.execCommand('underline', false, null);
                     break;
             }
-            localStorage.setItem('notion-xp-richtext-v8', editor.innerHTML);
+            localStorage.setItem('notion-xp-richtext-v9', editor.innerHTML);
         }
 
         // --- IMPORTA FILE ---
@@ -416,7 +425,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 editor.innerHTML = e.target.result.replace(/\n/g, "<br>");
-                localStorage.setItem('notion-xp-richtext-v8', editor.innerHTML);
+                localStorage.setItem('notion-xp-richtext-v9', editor.innerHTML);
             };
             reader.readAsText(file);
             event.target.value = ''; 
