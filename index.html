@@ -3,55 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Win Notepad per Notion</title>
+    <title>Retro Notepad</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Sfondo di Notion (Light Mode di default) */
+            /* Sfondo di Notion */
             --page-bg: #FFFFFF; 
             
-            /* Colori del tema Rosa (Default) */
-            --win-bg: #f4b6c2;
-            --title-bg: #e58da1;
-            --title-text: #000000;
-            --menu-bg: #f4b6c2;
-            --text-bg: #fdf0f4;
-            --text-color: #000000;
+            /* Colori esatti campionati dalla tua immagine (Tema Rosa Default) */
+            --title-bg: #E49CB2;      /* Rosa scuro barra del titolo */
+            --menu-bg: #EBB6C6;       /* Rosa medio per menù e bordi */
+            --text-bg: #FBE5EC;       /* Rosa chiarissimo per il foglio */
+            --scroll-thumb: #D387A3;  /* Rosa scuro per la barra di scorrimento */
             
-            /* Colori di sistema classici */
-            --border-dark: #000000;
-            --border-light: #ffffff;
-            --border-shadow: #888888;
-            --highlight: #000080; /* Blu classico selezione Windows */
-            --highlight-text: #ffffff;
+            --border-color: #000000;
+            --text-color: #000000;
         }
 
         /* --- SFONDI NOTION --- */
         [data-mode="dark"] {
             --page-bg: #191919;
-            /* Testo più leggibile in dark mode */
+            /* In dark mode scurisci il testo e il foglio per non accecare */
             --text-bg: #2a1a20; 
             --text-color: #f0f0f0;
+            --border-color: #000; 
         }
-        [data-mode="beige"] {
-            --page-bg: #F7F6F3;
-        }
+        [data-mode="beige"] { --page-bg: #F7F6F3; }
 
-        /* --- PALETTE COLORI (Stile Win95) --- */
+        /* --- PALETTE COLORI (Generati con la stessa logica di contrasto) --- */
         [data-palette="pink"] {
-            --win-bg: #f4b6c2; --title-bg: #e58da1; --menu-bg: #f4b6c2; --text-bg: #fdf0f4;
+            --title-bg: #E49CB2; --menu-bg: #EBB6C6; --text-bg: #FBE5EC; --scroll-thumb: #D387A3;
         }
         [data-palette="green"] {
-            --win-bg: #b6f4b6; --title-bg: #8de58d; --menu-bg: #b6f4b6; --text-bg: #f0fdf0;
+            --title-bg: #9CE4A5; --menu-bg: #B6EBC0; --text-bg: #E5FBE9; --scroll-thumb: #87D397;
         }
         [data-palette="blue"] {
-            --win-bg: #b6c2f4; --title-bg: #8da1e5; --menu-bg: #b6c2f4; --text-bg: #f0f4fd;
+            --title-bg: #9CA8E4; --menu-bg: #B6BFEB; --text-bg: #E5E9FB; --scroll-thumb: #879AD3;
         }
         [data-palette="purple"] {
-            --win-bg: #dcb6f4; --title-bg: #c28de5; --menu-bg: #dcb6f4; --text-bg: #faf0fd;
+            --title-bg: #C19CE4; --menu-bg: #D4B6EB; --text-bg: #F2E5FB; --scroll-thumb: #B187D3;
         }
-
-        /* Aggiustamenti per la Dark Mode */
+        
+        /* Adattamenti Dark Mode per i nuovi colori */
         [data-mode="dark"][data-palette="green"] { --text-bg: #1a2a1a; }
         [data-mode="dark"][data-palette="blue"] { --text-bg: #1a1e2a; }
         [data-mode="dark"][data-palette="purple"] { --text-bg: #261a2a; }
@@ -67,123 +60,139 @@
             transition: background-color 0.3s ease;
         }
 
-        /* --- LA FINESTRA RETRÒ (Win95 Style) --- */
+        * { box-sizing: border-box; }
+
+        /* --- LA FINESTRA RETRÒ --- */
         .window {
             width: 100%; height: 100%;
-            background-color: var(--win-bg);
-            /* Bordo 3D Windows */
-            border-top: 2px solid var(--border-light);
-            border-left: 2px solid var(--border-light);
-            border-right: 2px solid var(--border-dark);
-            border-bottom: 2px solid var(--border-dark);
-            box-shadow: inset -1px -1px var(--border-shadow);
+            background-color: var(--menu-bg);
+            border: 2px solid var(--border-color);
             display: flex; flex-direction: column;
             transition: background-color 0.3s ease;
-            box-sizing: border-box;
         }
 
         /* --- BARRA DEL TITOLO --- */
         .title-bar {
             background-color: var(--title-bg);
-            color: var(--title-text);
-            padding: 3px 6px;
+            color: var(--border-color);
+            padding: 2px;
             display: flex; justify-content: space-between; align-items: center;
-            font-size: 20px; font-weight: bold;
-            margin: 2px;
-            border: 1px solid var(--border-dark);
+            border-bottom: 2px solid var(--border-color);
+            height: 28px;
         }
-        .title-bar-text { display: flex; align-items: center; gap: 8px; }
-        .title-icon { font-size: 16px; }
         
-        .title-controls { display: flex; gap: 3px; }
-        .control-btn {
+        /* Icona di sistema a sinistra */
+        .sys-btn {
             width: 20px; height: 20px;
-            background-color: var(--win-bg); color: #000;
-            border-top: 2px solid var(--border-light); border-left: 2px solid var(--border-light);
-            border-right: 2px solid var(--border-dark); border-bottom: 2px solid var(--border-dark);
-            font-family: 'VT323', monospace; font-size: 16px;
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
-            line-height: 1; padding-bottom: 2px; box-sizing: border-box;
+            border: 2px solid var(--border-color);
+            background-color: var(--menu-bg);
+            display: flex; justify-content: center; align-items: center;
+            margin-left: 2px;
         }
-        .control-btn:active {
-            border-top: 2px solid var(--border-dark); border-left: 2px solid var(--border-dark);
-            border-right: 2px solid var(--border-light); border-bottom: 2px solid var(--border-light);
-            padding-top: 2px; padding-bottom: 0;
+        .sys-line { width: 10px; height: 2px; background-color: var(--border-color); }
+        
+        .title-text {
+            font-size: 22px; font-weight: bold; letter-spacing: 0.5px;
+            flex-grow: 1; text-align: center; margin-top: 2px;
         }
+        
+        /* Controlli finestra a destra */
+        .window-btns { display: flex; gap: 2px; margin-right: 2px; }
+        .win-btn {
+            width: 20px; height: 20px;
+            border: 2px solid var(--border-color);
+            background-color: var(--menu-bg);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 18px; font-weight: bold; line-height: 1;
+            padding-bottom: 2px; cursor: pointer;
+        }
+        .win-btn:active { background-color: var(--border-color); color: var(--menu-bg); }
 
         /* --- BARRA DEI MENÙ --- */
         .menu-bar {
-            display: flex; gap: 5px; padding: 2px 8px;
-            font-size: 20px; color: #000; position: relative;
+            display: flex; gap: 2px; padding: 0 4px;
             background-color: var(--menu-bg);
-            border-bottom: 1px solid var(--border-shadow);
+            border-bottom: 2px solid var(--border-color);
+            position: relative; z-index: 10;
         }
         
         .menu-item {
-            padding: 2px 8px; cursor: pointer; position: relative; user-select: none;
+            font-size: 22px; padding: 2px 6px;
+            cursor: pointer; position: relative; user-select: none;
+            border: 2px solid transparent; 
+            margin-bottom: -2px; /* IL TRUCCO: Si sovrappone al bordo sottostante */
+            z-index: 11;
         }
-        .menu-item:hover, .menu-item.active { 
-            background-color: var(--highlight); 
-            color: var(--highlight-text); 
+        
+        /* Effetto linguetta unita al menù a tendina */
+        .menu-item.active { 
+            background-color: var(--menu-bg); 
+            border: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--menu-bg); /* Nasconde la linea di divisione */
+            z-index: 13;
         }
 
         /* --- TENDINE DEI MENÙ --- */
         .dropdown {
-            display: none; position: absolute; top: 100%; left: 0;
-            background-color: var(--menu-bg); min-width: 160px;
-            border-top: 2px solid var(--border-light); border-left: 2px solid var(--border-light);
-            border-right: 2px solid var(--border-dark); border-bottom: 2px solid var(--border-dark);
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.2); z-index: 100;
-            color: #000; padding: 2px;
+            display: none; position: absolute; top: 100%; left: -2px;
+            background-color: var(--menu-bg); min-width: 180px;
+            border: 2px solid var(--border-color);
+            z-index: 12; color: var(--border-color);
+            padding: 2px 0;
+            /* L'ombra piatta retrò */
+            box-shadow: 2px 2px 0px rgba(0,0,0,1);
         }
         .menu-item.active .dropdown { display: flex; flex-direction: column; }
         
         .dropdown-item {
-            padding: 4px 10px; font-size: 20px;
-            display: flex; align-items: center; gap: 10px;
+            padding: 2px 10px; font-size: 22px;
+            display: flex; align-items: center; gap: 8px;
         }
         .dropdown-item:hover { 
-            background-color: var(--highlight); 
-            color: var(--highlight-text); 
+            background-color: var(--border-color); 
+            color: var(--menu-bg); 
         }
+        
+        /* Il separatore a linea singola nera */
         .dropdown-divider { 
-            height: 1px; background-color: var(--border-shadow); 
-            border-bottom: 1px solid var(--border-light); margin: 4px 5px; 
+            height: 2px; background-color: var(--border-color); 
+            margin: 2px 0; 
         }
 
-        /* Quadrati per Anteprima Colori */
+        /* Icone e Quadrati per Anteprima Colori */
+        .menu-icon { width: 20px; text-align: center; display: inline-block; font-size: 18px; }
         .color-preview {
-            width: 14px; height: 14px;
-            border: 1px solid var(--border-dark);
-            display: inline-block;
+            width: 14px; height: 14px; border: 2px solid var(--border-color);
+            display: inline-block; margin-left: 2px; margin-right: 2px;
         }
 
         /* --- AREA DI TESTO --- */
         .window-body {
-            flex-grow: 1; padding: 6px; display: flex;
-            background-color: var(--win-bg);
+            flex-grow: 1; display: flex;
+            background-color: var(--menu-bg); padding: 2px;
         }
         textarea {
             width: 100%; height: 100%; resize: none; box-sizing: border-box;
             background-color: var(--text-bg); color: var(--text-color);
-            font-family: 'VT323', monospace; font-size: 22px; line-height: 1.4;
-            padding: 10px; outline: none;
-            /* Bordo 3D incassato */
-            border-top: 2px solid var(--border-dark); border-left: 2px solid var(--border-dark);
-            border-right: 2px solid var(--border-light); border-bottom: 2px solid var(--border-light);
+            font-family: 'VT323', monospace; font-size: 24px; line-height: 1.2;
+            padding: 8px; outline: none; border: none;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         
-        /* Personalizzazione della barra di scorrimento (Retro Win95 Style) */
-        textarea::-webkit-scrollbar { width: 20px; }
-        textarea::-webkit-scrollbar-track { 
-            background: repeating-linear-gradient(45deg, #fff 0px, #fff 2px, #dfdfdf 2px, #dfdfdf 4px);
-            border-left: 1px solid var(--border-dark); 
+        /* --- SCROLLBAR RETRO ESATTA --- */
+        textarea::-webkit-scrollbar { 
+            width: 22px; 
+            border-left: 2px solid var(--border-color); 
+            background: var(--text-bg); 
         }
         textarea::-webkit-scrollbar-thumb { 
-            background: var(--win-bg); 
-            border-top: 2px solid var(--border-light); border-left: 2px solid var(--border-light);
-            border-right: 2px solid var(--border-dark); border-bottom: 2px solid var(--border-dark);
+            background: var(--scroll-thumb); 
+            border: 2px solid var(--border-color); 
+        }
+        textarea::-webkit-scrollbar-button { 
+            display: block; height: 20px; 
+            background-color: var(--menu-bg); 
+            border: 2px solid var(--border-color); 
         }
 
     </style>
@@ -192,13 +201,12 @@
 
     <div class="window">
         <div class="title-bar">
-            <div class="title-bar-text">
-                <span class="title-icon">🖳</span> Nota Rapida.txt
-            </div>
-            <div class="title-controls">
-                <div class="control-btn">_</div>
-                <div class="control-btn">□</div>
-                <div class="control-btn">x</div>
+            <div class="sys-btn"><div class="sys-line"></div></div>
+            <div class="title-text">Nota Rapida - 4.1 Definitiva</div>
+            <div class="window-btns">
+                <div class="win-btn">_</div>
+                <div class="win-btn">☐</div>
+                <div class="win-btn">×</div>
             </div>
         </div>
 
@@ -206,45 +214,47 @@
             
             <div class="menu-item" onclick="toggleMenu(event, 'file')">File
                 <div class="dropdown" id="dropdown-file">
-                    <div class="dropdown-item" onclick="menuAction('new')">New</div>
+                    <div class="dropdown-item" onclick="menuAction('new')"><span class="menu-icon">📄</span> New</div>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" onclick="menuAction('save')">Save As .txt</div>
+                    <div class="dropdown-item" onclick="menuAction('save')"><span class="menu-icon">💾</span> Save As .txt</div>
+                    <div class="dropdown-item" onclick="document.getElementById('file-input').click()"><span class="menu-icon">📂</span> Open</div>
+                    <input type="file" id="file-input" accept=".txt" style="display: none;" onchange="importData(event)">
                 </div>
             </div>
             
             <div class="menu-item" onclick="toggleMenu(event, 'edit')">Edit
                 <div class="dropdown" id="dropdown-edit">
-                    <div class="dropdown-item" onclick="menuAction('copy')">Copy</div>
-                    <div class="dropdown-item" onclick="menuAction('paste')">Paste</div>
+                    <div class="dropdown-item" onclick="menuAction('copy')"><span class="menu-icon">📑</span> Copy</div>
+                    <div class="dropdown-item" onclick="menuAction('paste')"><span class="menu-icon">📋</span> Paste</div>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" onclick="menuAction('select-all')">Select All</div>
+                    <div class="dropdown-item" onclick="menuAction('select-all')"><span class="menu-icon">☑</span> Select All</div>
                 </div>
             </div>
 
             <div class="menu-item" onclick="toggleMenu(event, 'palette')">Palette
                 <div class="dropdown" id="dropdown-palette">
-                    <div class="dropdown-item" onclick="setNotionMode('light')">Notion Light</div>
-                    <div class="dropdown-item" onclick="setNotionMode('beige')">Notion Beige</div>
-                    <div class="dropdown-item" onclick="setNotionMode('dark')">Notion Dark</div>
+                    <div class="dropdown-item" onclick="setNotionMode('light')"><span class="menu-icon">☀️</span> Notion Light</div>
+                    <div class="dropdown-item" onclick="setNotionMode('beige')"><span class="menu-icon">📜</span> Notion Beige</div>
+                    <div class="dropdown-item" onclick="setNotionMode('dark')"><span class="menu-icon">🌙</span> Notion Dark</div>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" onclick="setThemePalette('pink')">
-                        <span class="color-preview" style="background-color: #f4b6c2;"></span> Rosa
+                        <span class="color-preview" style="background-color: #EBB6C6;"></span> Tema Rosa
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('purple')">
-                        <span class="color-preview" style="background-color: #dcb6f4;"></span> Viola
+                        <span class="color-preview" style="background-color: #D4B6EB;"></span> Tema Viola
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('blue')">
-                        <span class="color-preview" style="background-color: #b6c2f4;"></span> Blu
+                        <span class="color-preview" style="background-color: #B6BFEB;"></span> Tema Blu
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('green')">
-                        <span class="color-preview" style="background-color: #b6f4b6;"></span> Verde
+                        <span class="color-preview" style="background-color: #B6EBC0;"></span> Tema Verde
                     </div>
                 </div>
             </div>
 
             <div class="menu-item" onclick="toggleMenu(event, 'help')">Help
                 <div class="dropdown" id="dropdown-help">
-                    <div class="dropdown-item" onclick="alert('Retro Windows Notepad\nDati salvati automaticamente.\nBy Gemini!')">About</div>
+                    <div class="dropdown-item" onclick="alert('Retro Notepad \nDati salvati localmente.')"><span class="menu-icon">❓</span> About</div>
                 </div>
             </div>
 
@@ -258,24 +268,25 @@
     <script>
         const textarea = document.getElementById('notepad-text');
 
-        // --- GESTIONE DATI ---
-        textarea.value = localStorage.getItem('notion-retro-notepad') || '';
+        // --- GESTIONE DATI LOCALI ---
+        textarea.value = localStorage.getItem('notion-retro-notepad-v2') || '';
         textarea.addEventListener('input', () => {
-            localStorage.setItem('notion-retro-notepad', textarea.value);
+            localStorage.setItem('notion-retro-notepad-v2', textarea.value);
         });
 
         // --- GESTIONE TEMI E MODALITÀ ---
         function setNotionMode(mode) {
             document.body.setAttribute('data-mode', mode);
-            localStorage.setItem('notion-notepad-mode', mode);
+            localStorage.setItem('notion-notepad-mode-v2', mode);
         }
         function setThemePalette(palette) {
             document.body.setAttribute('data-palette', palette);
-            localStorage.setItem('notion-notepad-palette', palette);
+            localStorage.setItem('notion-notepad-palette-v2', palette);
         }
 
-        setNotionMode(localStorage.getItem('notion-notepad-mode') || 'light');
-        setThemePalette(localStorage.getItem('notion-notepad-palette') || 'pink');
+        // Caricamento preferenze
+        setNotionMode(localStorage.getItem('notion-notepad-mode-v2') || 'light');
+        setThemePalette(localStorage.getItem('notion-notepad-palette-v2') || 'pink');
 
         // --- GESTIONE MENÙ A TENDINA ---
         function toggleMenu(event, menuName) {
@@ -296,7 +307,7 @@
                 case 'new':
                     if(confirm("Vuoi cancellare tutto il testo?")) {
                         textarea.value = '';
-                        localStorage.setItem('notion-retro-notepad', '');
+                        localStorage.setItem('notion-retro-notepad-v2', '');
                     }
                     break;
                 case 'save':
@@ -317,7 +328,7 @@
                         const start = textarea.selectionStart;
                         const end = textarea.selectionEnd;
                         textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
-                        localStorage.setItem('notion-retro-notepad', textarea.value);
+                        localStorage.setItem('notion-retro-notepad-v2', textarea.value);
                     } catch (err) {
                         alert("Usa la scorciatoia Ctrl+V (o Cmd+V) per incollare.");
                     }
@@ -326,6 +337,19 @@
                     textarea.select();
                     break;
             }
+        }
+
+        // --- FUNZIONE CARICAMENTO TESTO (IMPORT) ---
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                textarea.value = e.target.result;
+                localStorage.setItem('notion-retro-notepad-v2', textarea.value);
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Resetta input
         }
     </script>
 </body>
