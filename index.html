@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notepad XP/Retro Mix Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <title>Notepad XP/Retro - Rich Text Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Caveat:wght@500&display=swap" rel="stylesheet">
     <style>
         :root {
             --page-bg: #FFFFFF; 
             
             /* Palette Rosa (Default) */
-            --win-frame: #A03050;      /* Bordo esterno scuro */
-            --title-bg-start: #FFDDEE; /* Sfumatura titolo (alto) */
-            --title-bg-end: #F4AABF;   /* Sfumatura titolo (basso) */
+            --win-frame: #A03050;      
+            --title-bg-start: #FFDDEE; 
+            --title-bg-end: #F4AABF;   
             --title-text: #000000;
             
-            --sys-bg: #F0BBD0;         /* Sfondo menù e finestra */
-            --text-bg: #FFF0F5;        /* Sfondo foglio */
+            --sys-bg: #F0BBD0;         
+            --text-bg: #FFF0F5;        
             --text-color: #000000;
             
             --border-dark: #000000;
             --border-light: #ffffff;
             --border-shadow: #888888;
-            --highlight: #2151DC;     /* Blu classico selezione XP */
+            --highlight: #2151DC;     
             --highlight-text: #ffffff;
         }
 
@@ -52,7 +52,7 @@
         }
 
         /* Aggiustamenti Dark mode per il testo */
-        [data-mode="dark"] textarea { color: var(--page-bg); }
+        [data-mode="dark"] #notepad-text { color: var(--page-bg); }
 
         body, html {
             margin: 0; padding: 10px;
@@ -67,26 +67,23 @@
 
         * { box-sizing: border-box; }
 
-        /* --- LA FINESTRA PRINCIPALE (Curve XP) --- */
+        /* --- LA FINESTRA PRINCIPALE --- */
         .window {
             width: 100%; height: 100%;
             background-color: var(--sys-bg);
             border: 3px solid var(--win-frame);
-            /* Angoli arrotondati superiori morbidi */
             border-radius: 8px 8px 0 0;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: flex; flex-direction: column;
-            /* RIMOSSO overflow: hidden; PERCHÉ BLOCCAVA I MENÙ! */
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        /* --- BARRA DEL TITOLO (Sfumata) --- */
+        /* --- BARRA DEL TITOLO --- */
         .title-bar {
             display: flex; justify-content: space-between; align-items: center;
             height: 30px; padding: 0 8px;
             background: linear-gradient(to bottom, var(--title-bg-start) 0%, var(--title-bg-end) 50%, var(--title-bg-end) 100%);
             border-bottom: 1px solid var(--win-frame);
-            /* Arrotonda anche l'intestazione per seguire la finestra */
             border-radius: 5px 5px 0 0; 
         }
         
@@ -107,7 +104,6 @@
             flex-grow: 1; text-align: center;
         }
 
-        /* --- PULSANTI FINESTRA (Ripristinati a stile Retro Quadrato!) --- */
         .window-btns { display: flex; gap: 2px; }
         .win-btn {
             width: 20px; height: 20px;
@@ -146,7 +142,7 @@
             border: 1px solid var(--border-shadow);
             z-index: 100; color: #000; padding: 2px;
             border-radius: 2px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Ombra morbida moderna */
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3); 
         }
         .menu-item.active .dropdown { display: flex; flex-direction: column; }
         
@@ -166,11 +162,10 @@
             display: inline-block; margin-right: 4px; border-radius: 2px;
         }
 
-        /* --- AREA DI TESTO --- */
+        /* --- AREA DI TESTO RICH TEXT --- */
         .window-body {
             flex-grow: 1; padding: 4px; display: flex;
             background-color: var(--sys-bg);
-            /* Importante per non far strabordare l'area di testo */
             overflow: hidden; 
         }
         .textarea-container {
@@ -181,38 +176,51 @@
             overflow: hidden;
         }
 
-        textarea {
-            flex-grow: 1; resize: none; box-sizing: border-box;
+        /* Trasformato in un contenteditable div per permettere Grassetto/Corsivo */
+        #notepad-text {
+            flex-grow: 1; box-sizing: border-box;
             background-color: transparent; 
             color: var(--text-color);
             padding: 10px; outline: none; border: none;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
         
-        /* Gestione Font Area Testo */
-        [data-font="pixel"] textarea { font-family: 'VT323', monospace; font-size: 26px; }
-        [data-font="arial"] textarea { font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.5; }
+        /* Placeholder per il div modificabile */
+        #notepad-text:empty:before {
+            content: attr(data-placeholder);
+            color: var(--border-shadow);
+            pointer-events: none;
+            display: block;
+        }
+        
+        /* Gestione Font Area Testo (Aggiunto Caveat Aesthetic) */
+        [data-font="pixel"] #notepad-text { font-family: 'VT323', monospace; font-size: 26px; }
+        [data-font="arial"] #notepad-text { font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.5; }
+        [data-font="aesthetic"] #notepad-text { font-family: 'Caveat', cursive; font-size: 26px; line-height: 1.2; }
 
         /* --- SCROLLBAR XP Style --- */
-        textarea::-webkit-scrollbar { width: 18px; background: #E1E1E1; }
-        textarea::-webkit-scrollbar-track { background: #E1E1E1; border-left: 1px solid #BFBFBF; }
+        #notepad-text::-webkit-scrollbar { width: 18px; background: #E1E1E1; }
+        #notepad-text::-webkit-scrollbar-track { background: #E1E1E1; border-left: 1px solid #BFBFBF; }
         
-        textarea::-webkit-scrollbar-thumb { 
+        #notepad-text::-webkit-scrollbar-thumb { 
             background: linear-gradient(to right, #FFF 0%, var(--title-bg-end) 50%, var(--title-bg-end) 100%);
             border: 1px solid var(--win-frame);
             border-radius: 9px;
         }
         
-        textarea::-webkit-scrollbar-button { 
+        #notepad-text::-webkit-scrollbar-button { 
             display: block; height: 18px; 
             background-color: #E1E1E1;
             border: 1px solid #BFBFBF;
             border-radius: 4px;
         }
-        textarea::-webkit-scrollbar-button:vertical:start:decrement { 
+        #notepad-text::-webkit-scrollbar-button:vertical:start:decrement { 
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polygon points="1,8 9,8 5,2" fill="black"/></svg>');
             background-position: center; background-repeat: no-repeat; background-size: 10px;
         }
-        textarea::-webkit-scrollbar-button:vertical:end:increment { 
+        #notepad-text::-webkit-scrollbar-button:vertical:end:increment { 
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polygon points="1,2 9,2 5,8" fill="black"/></svg>');
             background-position: center; background-repeat: no-repeat; background-size: 10px;
         }
@@ -223,7 +231,7 @@
     <div class="window">
         <div class="title-bar">
             <div class="sys-icon-box"><div class="sys-icon-inner"></div></div>
-            <div class="title-text">Nota Rapida</div>
+            <div class="title-text">Nota Rapida - Rich Text Edition</div>
             <div class="window-btns">
                 <div class="win-btn"><div class="icon-min"></div></div>
                 <div class="win-btn"><div class="icon-max"></div></div>
@@ -234,9 +242,9 @@
         <div class="menu-bar" id="menu-bar">
             <div class="menu-item" onclick="toggleMenu(event, 'file')">File
                 <div class="dropdown" id="dropdown-file">
-                    <div class="dropdown-item" onclick="menuAction('new')"><span class="menu-icon">📄</span> New</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('new')"><span class="menu-icon">📄</span> New</div>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" onclick="menuAction('save')"><span class="menu-icon">💾</span> Save As...</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('save')"><span class="menu-icon">💾</span> Save As...</div>
                     <div class="dropdown-item" onclick="document.getElementById('file-input').click()"><span class="menu-icon">📂</span> Open...</div>
                     <input type="file" id="file-input" accept=".txt" style="display: none;" onchange="importData(event)">
                 </div>
@@ -244,14 +252,26 @@
             
             <div class="menu-item" onclick="toggleMenu(event, 'edit')">Edit
                 <div class="dropdown" id="dropdown-edit">
-                    <div class="dropdown-item" onclick="menuAction('undo')"><span class="menu-icon">↶</span> Undo</div>
-                    <div class="dropdown-item" onclick="menuAction('redo')"><span class="menu-icon">↷</span> Redo</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('undo')"><span class="menu-icon">↶</span> Undo</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('redo')"><span class="menu-icon">↷</span> Redo</div>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" onclick="menuAction('cut')"><span class="menu-icon">✂</span> Cut</div>
-                    <div class="dropdown-item" onclick="menuAction('copy')"><span class="menu-icon">📑</span> Copy</div>
-                    <div class="dropdown-item" onclick="menuAction('paste')"><span class="menu-icon">📋</span> Paste</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('cut')"><span class="menu-icon">✂</span> Cut</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('copy')"><span class="menu-icon">📑</span> Copy</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('paste')"><span class="menu-icon">📋</span> Paste</div>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" onclick="menuAction('select-all')"><span class="menu-icon">☑</span> Select All</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('select-all')"><span class="menu-icon">☑</span> Select All</div>
+                </div>
+            </div>
+
+            <div class="menu-item" onclick="toggleMenu(event, 'format')">Format
+                <div class="dropdown" id="dropdown-format">
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('bold')"><span class="menu-icon">𝗕</span> Grassetto</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('italic')"><span class="menu-icon">𝐼</span> Corsivo</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); menuAction('underline')"><span class="menu-icon">U̲</span> Sottolineato</div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); setTextFont('pixel')"><span class="menu-icon">A</span> Font: Pixel</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); setTextFont('arial')"><span class="menu-icon">A</span> Font: Arial</div>
+                    <div class="dropdown-item" onmousedown="event.preventDefault(); setTextFont('aesthetic')"><span class="menu-icon">A</span> Font: Aesthetic</div>
                 </div>
             </div>
 
@@ -273,54 +293,45 @@
                     <div class="dropdown-item" onclick="setThemePalette('green')">
                         <span class="color-preview" style="background-color: #BBF0BF;"></span> Tema Verde
                     </div>
-                    <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" onclick="setTextFont('pixel')"><span class="menu-icon">A</span> Font: Pixel</div>
-                    <div class="dropdown-item" onclick="setTextFont('arial')"><span class="menu-icon">A</span> Font: Arial</div>
-                </div>
-            </div>
-
-            <div class="menu-item" onclick="toggleMenu(event, 'help')">Help
-                <div class="dropdown" id="dropdown-help">
-                    <div class="dropdown-item" onclick="alert('Notepad Retro-Modern Mix\nDati salvati localmente.')"><span class="menu-icon">❓</span> About</div>
                 </div>
             </div>
         </div>
 
         <div class="window-body">
             <div class="textarea-container">
-                <textarea id="notepad-text" spellcheck="false" placeholder="Inizia a digitare qui..."></textarea>
+                <div id="notepad-text" contenteditable="true" spellcheck="false" data-placeholder="Seleziona una parola e usa Format per renderla Grassetto..."></div>
             </div>
         </div>
     </div>
 
     <script>
-        const textarea = document.getElementById('notepad-text');
+        const editor = document.getElementById('notepad-text');
 
-        // --- SALVATAGGIO TESTO LOCALE ---
-        textarea.value = localStorage.getItem('notion-xp-notepad-v5') || '';
-        textarea.addEventListener('input', () => {
-            localStorage.setItem('notion-xp-notepad-v5', textarea.value);
+        // --- SALVATAGGIO TESTO LOCALE (Formattazione HTML) ---
+        editor.innerHTML = localStorage.getItem('notion-xp-richtext-v7') || '';
+        editor.addEventListener('input', () => {
+            localStorage.setItem('notion-xp-richtext-v7', editor.innerHTML);
         });
 
-        // --- GESTIONE PREFERENZE GRAFICHE E FONT ---
+        // --- GESTIONE PREFERENZE ---
         function setNotionMode(mode) {
             document.body.setAttribute('data-mode', mode);
-            localStorage.setItem('notion-notepad-mode-v5', mode);
+            localStorage.setItem('notion-notepad-mode-v7', mode);
         }
         function setThemePalette(palette) {
             document.body.setAttribute('data-palette', palette);
-            localStorage.setItem('notion-notepad-palette-v5', palette);
+            localStorage.setItem('notion-notepad-palette-v7', palette);
         }
         function setTextFont(fontType) {
             document.body.setAttribute('data-font', fontType);
-            localStorage.setItem('notion-notepad-font-v5', fontType);
+            localStorage.setItem('notion-notepad-font-v7', fontType);
         }
 
-        setNotionMode(localStorage.getItem('notion-notepad-mode-v5') || 'light');
-        setThemePalette(localStorage.getItem('notion-notepad-palette-v5') || 'pink');
-        setTextFont(localStorage.getItem('notion-notepad-font-v5') || 'pixel');
+        setNotionMode(localStorage.getItem('notion-notepad-mode-v7') || 'light');
+        setThemePalette(localStorage.getItem('notion-notepad-palette-v7') || 'pink');
+        setTextFont(localStorage.getItem('notion-notepad-font-v7') || 'pixel');
 
-        // --- LOGICA DI APERTURA E CHIUSURA MENÙ ---
+        // --- LOGICA MENÙ ---
         function toggleMenu(event, menuName) {
             event.stopPropagation(); 
             document.querySelectorAll('.menu-item').forEach(item => {
@@ -333,62 +344,74 @@
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
         }
 
-        // --- AZIONI DEI PULSANTI (File ed Edit) ---
+        // --- AZIONI RICH TEXT ---
         async function menuAction(action) {
+            // Focus forzato per evitare bug di selezione
+            editor.focus();
+            
             switch(action) {
                 case 'new':
                     if(confirm("Sei sicuro di voler svuotare il blocco note?")) {
-                        textarea.value = '';
-                        localStorage.setItem('notion-xp-notepad-v5', '');
+                        editor.innerHTML = '';
+                        localStorage.setItem('notion-xp-richtext-v7', '');
                     }
                     break;
                 case 'save':
-                    const blob = new Blob([textarea.value], { type: 'text/plain' });
+                    // Esporta come testo semplice rimuovendo i tag per sicurezza
+                    const blob = new Blob([editor.innerText], { type: 'text/plain' });
                     const anchor = document.createElement('a');
                     anchor.download = 'Nota_Rapida.txt';
                     anchor.href = window.URL.createObjectURL(blob);
                     anchor.click();
                     break;
                 case 'undo':
-                    document.execCommand('undo'); 
+                    document.execCommand('undo', false, null); 
                     break;
                 case 'redo':
-                    document.execCommand('redo'); 
+                    document.execCommand('redo', false, null); 
                     break;
                 case 'cut':
-                    textarea.select();
-                    document.execCommand('cut');
+                    document.execCommand('cut', false, null);
                     break;
                 case 'copy':
-                    textarea.select();
-                    document.execCommand('copy');
+                    document.execCommand('copy', false, null);
                     window.getSelection().removeAllRanges();
                     break;
                 case 'paste':
                     try {
                         const text = await navigator.clipboard.readText();
-                        const start = textarea.selectionStart;
-                        const end = textarea.selectionEnd;
-                        textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
-                        localStorage.setItem('notion-xp-notepad-v5', textarea.value);
+                        document.execCommand('insertText', false, text);
                     } catch (err) {
-                        alert("Usa la scorciatoia Ctrl+V (o Cmd+V) per incollare.");
+                        alert("Premi la scorciatoia Ctrl+V (o Cmd+V) sulla tastiera per incollare.");
                     }
                     break;
                 case 'select-all':
-                    textarea.select();
+                    document.execCommand('selectAll', false, null);
+                    break;
+                // Nuove formattazioni:
+                case 'bold':
+                    document.execCommand('bold', false, null);
+                    break;
+                case 'italic':
+                    document.execCommand('italic', false, null);
+                    break;
+                case 'underline':
+                    document.execCommand('underline', false, null);
                     break;
             }
+            // Aggiorna salvataggio locale post-formattazione
+            localStorage.setItem('notion-xp-richtext-v7', editor.innerHTML);
         }
 
-        // --- IMPORTARE UN FILE ESTERNO ---
+        // --- IMPORTA FILE ---
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                textarea.value = e.target.result;
-                localStorage.setItem('notion-xp-notepad-v5', textarea.value);
+                // Sostituisce i ritorni a capo testuali con <br> per l'HTML
+                editor.innerHTML = e.target.result.replace(/\n/g, "<br>");
+                localStorage.setItem('notion-xp-richtext-v7', editor.innerHTML);
             };
             reader.readAsText(file);
             event.target.value = ''; 
