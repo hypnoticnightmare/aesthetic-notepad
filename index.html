@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="darkreader-lock">
+    <meta name="color-scheme" content="light">
+    
     <title>Notepad XP/Retro - Rich Text Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Caveat:wght@500&display=swap" rel="stylesheet">
     <style>
-        /* SCUDO ANTI-FILTRI DEL BROWSER */
+        /* SCUDO CSS AGGIUNTIVO */
         :root, html, body {
             color-scheme: light !important;
             forced-color-adjust: none !important;
@@ -15,7 +18,7 @@
         }
 
         :root {
-            --page-bg: #FFFFFF; 
+            --page-bg: transparent; /* Rendiamo lo sfondo invisibile per far respirare Notion */
             
             /* Palette Rosa (Default) */
             --win-frame: #A03050;      
@@ -34,13 +37,15 @@
             --highlight-text: #ffffff;
         }
 
-        /* --- Sfondo di Notion --- */
+        /* --- Sfondo di Notion (Modalità manuali) --- */
         [data-mode="dark"] {
             --page-bg: #191919;
             --text-bg: #2a1a20; 
             --text-color: #f0f0f0;
         }
         [data-mode="beige"] { --page-bg: #F7F6F3; }
+        [data-mode="light"] { --page-bg: #FFFFFF; }
+        [data-mode="transparent"] { --page-bg: transparent; }
 
         /* --- Palette Colori Dinamiche --- */
         [data-palette="pink"] {
@@ -78,8 +83,8 @@
         /* --- LA FINESTRA PRINCIPALE --- */
         .window {
             width: 100%; height: 100%;
-            background-color: var(--sys-bg);
-            border: 3px solid var(--win-frame);
+            background-color: var(--sys-bg) !important;
+            border: 3px solid var(--win-frame) !important;
             border-radius: 8px 8px 0 0;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: flex; flex-direction: column;
@@ -90,7 +95,7 @@
         .title-bar {
             display: flex; justify-content: space-between; align-items: center;
             height: 30px; padding: 0 8px;
-            background: linear-gradient(to bottom, var(--title-bg-start) 0%, var(--title-bg-end) 50%, var(--title-bg-end) 100%);
+            background: linear-gradient(to bottom, var(--title-bg-start) 0%, var(--title-bg-end) 50%, var(--title-bg-end) 100%) !important;
             border-bottom: 1px solid var(--win-frame);
             border-radius: 5px 5px 0 0; 
         }
@@ -112,7 +117,7 @@
         .title-text {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 14px; font-weight: bold;
-            color: var(--title-text);
+            color: var(--title-text) !important;
             flex-grow: 1; text-align: center;
         }
 
@@ -133,8 +138,8 @@
         /* --- BARRA DEI MENÙ --- */
         .menu-bar {
             display: flex; gap: 3px; padding: 3px 8px;
-            font-size: 20px; color: #000;
-            background-color: var(--sys-bg);
+            font-size: 20px; color: #000 !important;
+            background-color: var(--sys-bg) !important;
             border-bottom: 1px solid var(--border-shadow);
         }
         
@@ -143,16 +148,16 @@
             border-radius: 2px; position: relative;
         }
         .menu-item:hover, .menu-item.active { 
-            background-color: var(--highlight); 
-            color: var(--highlight-text); 
+            background-color: var(--highlight) !important; 
+            color: var(--highlight-text) !important; 
         }
 
         /* --- TENDINE DEI MENÙ --- */
         .dropdown {
             display: none; position: absolute; top: 100%; left: 0;
-            background-color: var(--sys-bg); min-width: 170px;
+            background-color: var(--sys-bg) !important; min-width: 170px;
             border: 1px solid var(--border-shadow);
-            z-index: 100; color: #000; padding: 2px;
+            z-index: 100; color: #000 !important; padding: 2px;
             border-radius: 2px;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.3); 
         }
@@ -164,8 +169,8 @@
             border-radius: 2px;
         }
         .dropdown-item:hover { 
-            background-color: var(--highlight); 
-            color: var(--highlight-text); 
+            background-color: var(--highlight) !important; 
+            color: var(--highlight-text) !important; 
         }
         .dropdown-divider { height: 1px; background-color: var(--border-shadow); margin: 4px 5px; }
         .menu-icon { width: 22px; text-align: center; font-size: 18px; filter: grayscale(1); }
@@ -177,12 +182,12 @@
         /* --- AREA DI TESTO RICH TEXT --- */
         .window-body {
             flex-grow: 1; padding: 4px; display: flex;
-            background-color: var(--sys-bg);
+            background-color: var(--sys-bg) !important;
             overflow: hidden; 
         }
         .textarea-container {
             flex-grow: 1; border: 1px solid var(--border-shadow);
-            background-color: var(--text-bg);
+            background-color: var(--text-bg) !important;
             display: flex;
             border-radius: 2px; 
             overflow: hidden;
@@ -191,7 +196,7 @@
         #notepad-text {
             flex-grow: 1; box-sizing: border-box;
             background-color: transparent; 
-            color: var(--text-color);
+            color: var(--text-color) !important;
             padding: 10px; outline: none; border: none;
             overflow-y: auto;
             white-space: pre-wrap;
@@ -212,17 +217,17 @@
         /* --- SCROLLBAR XP Style --- */
         #notepad-text::-webkit-scrollbar { 
             width: 18px; 
-            background: #E1E1E1; 
+            background: #E1E1E1 !important; 
             cursor: pointer;
         }
         #notepad-text::-webkit-scrollbar-track { 
-            background: #E1E1E1; 
+            background: #E1E1E1 !important; 
             border-left: 1px solid #BFBFBF; 
             cursor: pointer;
         }
         
         #notepad-text::-webkit-scrollbar-thumb { 
-            background: linear-gradient(to right, #FFF 0%, var(--title-bg-end) 50%, var(--title-bg-end) 100%);
+            background: linear-gradient(to right, #FFF 0%, var(--title-bg-end) 50%, var(--title-bg-end) 100%) !important;
             border: 1px solid var(--win-frame);
             border-radius: 9px;
             cursor: pointer;
@@ -230,7 +235,7 @@
         
         #notepad-text::-webkit-scrollbar-button { 
             display: block; height: 18px; 
-            background-color: #E1E1E1;
+            background-color: #E1E1E1 !important;
             border: 1px solid #BFBFBF;
             border-radius: 4px;
             cursor: pointer;
@@ -245,7 +250,7 @@
         }
     </style>
 </head>
-<body data-mode="light" data-palette="pink" data-font="pixel">
+<body data-mode="transparent" data-palette="pink" data-font="pixel">
 
     <div class="window">
         <div class="title-bar">
@@ -296,6 +301,7 @@
 
             <div class="menu-item" onclick="toggleMenu(event, 'palette')">Palette
                 <div class="dropdown" id="dropdown-palette">
+                    <div class="dropdown-item" onclick="setNotionMode('transparent')"><span class="menu-icon">🪟</span> Sfondo Notion</div>
                     <div class="dropdown-item" onclick="setNotionMode('light')"><span class="menu-icon">☀️</span> Luce</div>
                     <div class="dropdown-item" onclick="setNotionMode('beige')"><span class="menu-icon">📜</span> Beige</div>
                     <div class="dropdown-item" onclick="setNotionMode('dark')"><span class="menu-icon">🌙</span> Notte</div>
@@ -326,29 +332,30 @@
     <script>
         const editor = document.getElementById('notepad-text');
 
-        // --- SALVATAGGIO TESTO LOCALE (Formattazione HTML) ---
-        editor.innerHTML = localStorage.getItem('notion-xp-richtext-v9') || '';
+        // --- SALVATAGGIO TESTO LOCALE ---
+        editor.innerHTML = localStorage.getItem('notion-xp-richtext-v10') || '';
         editor.addEventListener('input', () => {
-            localStorage.setItem('notion-xp-richtext-v9', editor.innerHTML);
+            localStorage.setItem('notion-xp-richtext-v10', editor.innerHTML);
         });
 
         // --- GESTIONE PREFERENZE ---
         function setNotionMode(mode) {
             document.body.setAttribute('data-mode', mode);
-            localStorage.setItem('notion-notepad-mode-v9', mode);
+            localStorage.setItem('notion-notepad-mode-v10', mode);
         }
         function setThemePalette(palette) {
             document.body.setAttribute('data-palette', palette);
-            localStorage.setItem('notion-notepad-palette-v9', palette);
+            localStorage.setItem('notion-notepad-palette-v10', palette);
         }
         function setTextFont(fontType) {
             document.body.setAttribute('data-font', fontType);
-            localStorage.setItem('notion-notepad-font-v9', fontType);
+            localStorage.setItem('notion-notepad-font-v10', fontType);
         }
 
-        setNotionMode(localStorage.getItem('notion-notepad-mode-v9') || 'light');
-        setThemePalette(localStorage.getItem('notion-notepad-palette-v9') || 'pink');
-        setTextFont(localStorage.getItem('notion-notepad-font-v9') || 'pixel');
+        // Default: Sfondo Trasparente in modo che il beige di Notion si veda naturalmente senza conflitti
+        setNotionMode(localStorage.getItem('notion-notepad-mode-v10') || 'transparent');
+        setThemePalette(localStorage.getItem('notion-notepad-palette-v10') || 'pink');
+        setTextFont(localStorage.getItem('notion-notepad-font-v10') || 'pixel');
 
         // --- LOGICA MENÙ ---
         function toggleMenu(event, menuName) {
@@ -371,7 +378,7 @@
                 case 'new':
                     if(confirm("Sei sicuro di voler svuotare il blocco note?")) {
                         editor.innerHTML = '';
-                        localStorage.setItem('notion-xp-richtext-v9', '');
+                        localStorage.setItem('notion-xp-richtext-v10', '');
                     }
                     break;
                 case 'save':
@@ -415,7 +422,7 @@
                     document.execCommand('underline', false, null);
                     break;
             }
-            localStorage.setItem('notion-xp-richtext-v9', editor.innerHTML);
+            localStorage.setItem('notion-xp-richtext-v10', editor.innerHTML);
         }
 
         // --- IMPORTA FILE ---
@@ -425,7 +432,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 editor.innerHTML = e.target.result.replace(/\n/g, "<br>");
-                localStorage.setItem('notion-xp-richtext-v9', editor.innerHTML);
+                localStorage.setItem('notion-xp-richtext-v10', editor.innerHTML);
             };
             reader.readAsText(file);
             event.target.value = ''; 
