@@ -3,37 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Win/Mac 100% Accurate Notepad</title>
+    <title>Notepad OS 7 - Final Code</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Sfondo di Notion */
             --page-bg: #FFFFFF; 
             
-            /* Colori esatti campionati dalla tua immagine */
-            --sys-bg: #ECAABF;         /* Rosa principale della finestra */
-            --text-bg: #FDE8EF;        /* Rosa chiarissimo del foglio */
-            --border-color: #000000;   /* Nero puro */
-            --highlight: #FFFFFF;      /* Luce per il finto 3D */
-            --shadow: #000000;         /* Ombra del finto 3D */
+            /* Colori base campionati dall'immagine */
+            --sys-bg: #EBA8BB;         /* Rosa scuro/finestra */
+            --text-bg: #FDE8EF;        /* Rosa chiaro/foglio */
+            --border-color: #000000;   /* Nero solido */
+            --highlight: #FFFFFF;      /* Luce bordo */
+            --shadow: #000000;         /* Ombra bordo */
             --menu-hover-bg: #000000;
-            --menu-hover-text: #ECAABF;
+            --menu-hover-text: #EBA8BB;
         }
 
+        /* --- Sfondo di Notion --- */
         [data-mode="dark"] { --page-bg: #191919; }
         [data-mode="beige"] { --page-bg: #F7F6F3; }
 
-        /* Palette Dinamiche mantenendo lo stile */
-        [data-palette="pink"] { --sys-bg: #ECAABF; --text-bg: #FDE8EF; --menu-hover-text: #ECAABF; }
-        [data-palette="green"] { --sys-bg: #A3D8A8; --text-bg: #E8FDF0; --menu-hover-text: #A3D8A8; }
-        [data-palette="blue"] { --sys-bg: #A3B5D8; --text-bg: #E8F0FD; --menu-hover-text: #A3B5D8; }
-        [data-palette="purple"] { --sys-bg: #C1A3D8; --text-bg: #F2E8FD; --menu-hover-text: #C1A3D8; }
+        /* --- Palette Colori --- */
+        [data-palette="pink"] { --sys-bg: #EBA8BB; --text-bg: #FDE8EF; --menu-hover-text: #EBA8BB; }
+        [data-palette="green"] { --sys-bg: #A8EBA8; --text-bg: #E8FDE8; --menu-hover-text: #A8EBA8; }
+        [data-palette="blue"] { --sys-bg: #A8BEEB; --text-bg: #E8EEFD; --menu-hover-text: #A8BEEB; }
+        [data-palette="purple"] { --sys-bg: #D4A8EB; --text-bg: #F4E8FD; --menu-hover-text: #D4A8EB; }
+
+        /* Aggiustamenti Dark Mode */
+        [data-mode="dark"][data-palette="pink"] { --text-bg: #2a1a20; --border-color: #000; }
+        [data-mode="dark"][data-palette="green"] { --text-bg: #1a2a1a; }
+        [data-mode="dark"][data-palette="blue"] { --text-bg: #1a1e2a; }
+        [data-mode="dark"][data-palette="purple"] { --text-bg: #261a2a; }
 
         body, html {
             margin: 0; padding: 10px;
             width: 100vw; height: 100vh;
             box-sizing: border-box;
             background-color: var(--page-bg);
+            /* Font base (Menù) */
             font-family: 'VT323', monospace;
             display: flex; justify-content: center; align-items: center;
             overflow: hidden; 
@@ -42,13 +49,13 @@
 
         * { box-sizing: border-box; }
 
-        /* --- FINESTRA PRINCIPALE --- */
+        /* --- LA FINESTRA PRINCIPALE --- */
         .window {
             width: 100%; height: 100%;
             background-color: var(--sys-bg);
-            border: 1px solid var(--border-color);
-            /* Doppio bordo: nero fuori, bianco/nero dentro per l'effetto System 7 */
-            box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow), 3px 3px 0 rgba(0,0,0,0.1);
+            border: 2px solid var(--border-color);
+            /* Luce a sinistra/alto e ombra solida 8-bit */
+            box-shadow: inset 1px 1px var(--highlight), 3px 3px 0 rgba(0,0,0,1);
             display: flex; flex-direction: column;
             padding: 2px;
         }
@@ -56,98 +63,92 @@
         /* --- BARRA DEL TITOLO --- */
         .title-bar {
             display: flex; justify-content: space-between; align-items: center;
-            height: 24px; padding: 0 2px;
-            position: relative; margin-bottom: 2px;
+            height: 26px; padding: 0 4px;
+            margin-bottom: 2px;
         }
         
-        /* Linee orizzontali stile Mac OS System 7 */
+        .sys-icon-box {
+            width: 20px; height: 20px;
+            border: 2px solid var(--border-color);
+            background-color: var(--sys-bg);
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: inset 1px 1px var(--highlight);
+        }
+        .sys-icon-inner { width: 10px; height: 3px; background-color: var(--border-color); }
+
         .title-stripes {
-            position: absolute; top: 2px; left: 24px; right: 60px; bottom: 2px;
-            background: repeating-linear-gradient(
-                to bottom,
-                transparent, transparent 1px,
-                var(--border-color) 1px, var(--border-color) 2px
-            );
-            z-index: 1;
-        }
-        
-        .title-text {
-            font-size: 18px; letter-spacing: 0.5px; line-height: 24px;
-            background-color: var(--sys-bg); /* Copre le strisce al centro */
-            padding: 0 8px; z-index: 2; margin: 0 auto; color: var(--border-color);
+            flex-grow: 1; height: 12px; margin: 0 8px;
+            background: repeating-linear-gradient(to bottom, transparent, transparent 1px, var(--border-color) 1px, var(--border-color) 2px);
         }
 
-        /* Bottoni della barra del titolo */
-        .sys-btn {
-            width: 16px; height: 16px; z-index: 2;
-            border: 1px solid var(--border-color);
-            background-color: var(--sys-bg);
-            box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
+        /* Font del Titolo aggiornato ad Arial/Sans-Serif */
+        .title-text {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px; font-weight: bold; letter-spacing: 0.5px;
+            color: var(--border-color); padding: 0 6px; white-space: nowrap;
         }
-        .sys-btn:active { box-shadow: inset 1px 1px var(--shadow), inset -1px -1px var(--highlight); }
-        
-        /* Icone interne disegnate in CSS */
-        .icon-sys { width: 8px; height: 2px; background: var(--border-color); }
-        .icon-min { width: 6px; height: 2px; background: var(--border-color); margin-top: 6px; }
-        .icon-max { width: 8px; height: 6px; border: 1px solid var(--border-color); border-top-width: 2px; }
-        .icon-close { width: 8px; height: 8px; background: repeating-linear-gradient(45deg, transparent, transparent 3px, var(--border-color) 3px, var(--border-color) 4px); }
-        
-        .window-btns { display: flex; gap: 2px; z-index: 2; }
+
+        .window-btns { display: flex; gap: 2px; }
+        .win-btn {
+            width: 20px; height: 20px;
+            border: 2px solid var(--border-color);
+            background-color: var(--sys-bg);
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            box-shadow: inset 1px 1px var(--highlight);
+        }
+        .win-btn:active { background-color: var(--border-color); color: var(--highlight); }
+        .icon-min { width: 8px; height: 2px; background: currentColor; margin-top: 8px; }
+        .icon-max { width: 10px; height: 8px; border: 2px solid currentColor; border-top-width: 3px; }
+        .icon-close { font-family: sans-serif; font-size: 16px; line-height: 1; margin-bottom: 2px; font-weight: bold; }
 
         /* --- BARRA DEI MENÙ --- */
         .menu-bar {
             display: flex; padding-left: 4px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
             position: relative; z-index: 10; margin-bottom: 2px;
         }
         
         .menu-item {
-            font-size: 20px; padding: 2px 8px;
+            font-size: 22px; padding: 2px 8px;
             cursor: pointer; position: relative; user-select: none;
-            border: 1px solid transparent; 
-            margin-bottom: -1px; /* Scavalca la linea inferiore */
+            border: 2px solid transparent; 
+            margin-bottom: -2px; /* Scavalca il bordo della barra */
             z-index: 11;
         }
         
         .menu-item.active { 
             background-color: var(--sys-bg); 
-            border: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--sys-bg); /* Fonde la linguetta col menù */
+            border: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--sys-bg); /* Fonde linguetta e dropdown */
             z-index: 13;
         }
 
         /* --- TENDINE DEI MENÙ --- */
         .dropdown {
-            display: none; position: absolute; top: 100%; left: -1px;
-            background-color: var(--sys-bg); min-width: 150px;
-            border: 1px solid var(--border-color);
+            display: none; position: absolute; top: 100%; left: -2px;
+            background-color: var(--sys-bg); min-width: 170px;
+            border: 2px solid var(--border-color);
             z-index: 12; color: var(--border-color);
-            padding: 1px;
-            /* L'ombra nera dura della tua immagine */
+            padding: 2px;
+            /* Ombra solida nera */
             box-shadow: 3px 3px 0px var(--border-color);
         }
         .menu-item.active .dropdown { display: flex; flex-direction: column; }
         
         .dropdown-item {
-            padding: 2px 10px; font-size: 20px;
+            padding: 4px 10px; font-size: 22px;
             display: flex; align-items: center; gap: 8px; cursor: pointer;
         }
-        /* Effetto hover inverso stile anni '90 */
         .dropdown-item:hover { 
             background-color: var(--menu-hover-bg); 
             color: var(--menu-hover-text); 
         }
-        
         .dropdown-divider { 
-            height: 1px; background-color: var(--border-color); 
-            margin: 2px 0; 
+            height: 2px; background-color: var(--border-color); margin: 2px 0; 
         }
-        .disabled-text { color: #666; }
-
-        /* Anteprime Colori */
+        .menu-icon { width: 22px; text-align: center; font-size: 18px; filter: grayscale(1); }
         .color-preview {
-            width: 12px; height: 12px; border: 1px solid var(--border-color);
+            width: 14px; height: 14px; border: 2px solid var(--border-color);
             display: inline-block; margin-right: 4px;
         }
 
@@ -155,127 +156,128 @@
         .window-body {
             flex-grow: 1; display: flex;
             background-color: var(--sys-bg); padding: 0;
-            border: 1px solid var(--border-color);
         }
-        
         .textarea-container {
-            flex-grow: 1; border-right: 1px solid var(--border-color);
+            flex-grow: 1; border: 2px solid var(--border-color);
             background-color: var(--text-bg);
+            display: flex;
         }
 
         textarea {
-            width: 100%; height: 100%; resize: none; box-sizing: border-box;
-            background-color: transparent; color: var(--border-color);
-            font-family: 'VT323', monospace; font-size: 24px; line-height: 1.1;
-            padding: 8px; outline: none; border: none;
+            flex-grow: 1; resize: none; box-sizing: border-box;
+            background-color: transparent; 
+            color: var(--border-color); /* Cambierà in bianco se Dark mode testuale */
+            font-size: 24px; line-height: 1.2;
+            padding: 10px; outline: none; border: none;
         }
         
-        /* --- SCROLLBAR RETRO DI PRECISIONE --- */
-        textarea::-webkit-scrollbar { width: 16px; background: var(--sys-bg); border-left: 1px solid var(--border-color); }
-        
-        /* Il pattern a puntini di sfondo (dithering) generato in CSS */
+        /* Gestione Scelta Font dal Menu */
+        [data-font="pixel"] textarea { font-family: 'VT323', monospace; font-size: 26px; }
+        [data-font="arial"] textarea { font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.5; }
+
+        /* Dark mode specifica per il testo interno per leggibilità */
+        [data-mode="dark"] textarea { color: var(--highlight); }
+
+        /* --- SCROLLBAR RETRO --- */
+        textarea::-webkit-scrollbar { width: 22px; background: var(--sys-bg); border-left: 2px solid var(--border-color); }
         textarea::-webkit-scrollbar-track { 
-            background-image: 
-                linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%, #bbb),
-                linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%, #bbb);
-            background-size: 2px 2px; background-position: 0 0, 1px 1px;
-            border-left: 1px solid var(--border-color);
+            background: #D3D3D3; /* Grigio classico da interfaccia OS */
+            border-left: 2px solid var(--border-color);
         }
-        
-        /* Cursore */
         textarea::-webkit-scrollbar-thumb { 
             background: var(--sys-bg); 
-            border: 1px solid var(--border-color);
-            box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+            border: 2px solid var(--border-color);
+            box-shadow: inset 1px 1px var(--highlight);
         }
-        
-        /* Bottoni freccia su e giù */
         textarea::-webkit-scrollbar-button { 
-            display: block; height: 16px; 
+            display: block; height: 22px; 
             background-color: var(--sys-bg); 
-            border: 1px solid var(--border-color); 
-            box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+            border: 2px solid var(--border-color); 
+            box-shadow: inset 1px 1px var(--highlight);
         }
-        
         textarea::-webkit-scrollbar-button:vertical:start:decrement { 
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polygon points="1,8 9,8 5,2" fill="black"/></svg>');
-            background-position: center; background-repeat: no-repeat; background-size: 8px;
+            background-position: center; background-repeat: no-repeat; background-size: 10px;
         }
         textarea::-webkit-scrollbar-button:vertical:end:increment { 
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polygon points="1,2 9,2 5,8" fill="black"/></svg>');
-            background-position: center; background-repeat: no-repeat; background-size: 8px;
+            background-position: center; background-repeat: no-repeat; background-size: 10px;
         }
-
     </style>
 </head>
-<body data-mode="light" data-palette="pink">
+<body data-mode="light" data-palette="pink" data-font="pixel">
 
     <div class="window">
         <div class="title-bar">
-            <div class="sys-btn"><div class="icon-sys"></div></div>
+            <div class="sys-icon-box"><div class="sys-icon-inner"></div></div>
             <div class="title-stripes"></div>
-            <div class="title-text">Nota Rapida - 4.2 Pixel Perfect</div>
+            <div class="title-text">Nota Rapida - 4.1 Definitiva</div>
+            <div class="title-stripes"></div>
             <div class="window-btns">
-                <div class="sys-btn"><div class="icon-min"></div></div>
-                <div class="sys-btn"><div class="icon-max"></div></div>
+                <div class="win-btn"><div class="icon-min"></div></div>
+                <div class="win-btn"><div class="icon-max"></div></div>
+                <div class="win-btn"><div class="icon-close">x</div></div>
             </div>
         </div>
 
         <div class="menu-bar" id="menu-bar">
             <div class="menu-item" onclick="toggleMenu(event, 'file')">File
                 <div class="dropdown" id="dropdown-file">
-                    <div class="dropdown-item" onclick="menuAction('new')">New</div>
+                    <div class="dropdown-item" onclick="menuAction('new')"><span class="menu-icon">📄</span> New</div>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" onclick="menuAction('save')">Save As .txt</div>
-                    <div class="dropdown-item" onclick="document.getElementById('file-input').click()">Open...</div>
+                    <div class="dropdown-item" onclick="menuAction('save')"><span class="menu-icon">💾</span> Save As...</div>
+                    <div class="dropdown-item" onclick="document.getElementById('file-input').click()"><span class="menu-icon">📂</span> Open...</div>
                     <input type="file" id="file-input" accept=".txt" style="display: none;" onchange="importData(event)">
                 </div>
             </div>
             
             <div class="menu-item" onclick="toggleMenu(event, 'edit')">Edit
                 <div class="dropdown" id="dropdown-edit">
-                    <div class="dropdown-item"><span class="disabled-text">Undo</span></div>
-                    <div class="dropdown-item"><span class="disabled-text">Redo</span></div>
+                    <div class="dropdown-item" onclick="menuAction('undo')"><span class="menu-icon">↶</span> Undo</div>
+                    <div class="dropdown-item" onclick="menuAction('redo')"><span class="menu-icon">↷</span> Redo</div>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" onclick="menuAction('cut')">Cut</div>
-                    <div class="dropdown-item" onclick="menuAction('copy')">Copy</div>
-                    <div class="dropdown-item" onclick="menuAction('paste')">Paste</div>
+                    <div class="dropdown-item" onclick="menuAction('cut')"><span class="menu-icon">✂</span> Cut</div>
+                    <div class="dropdown-item" onclick="menuAction('copy')"><span class="menu-icon">📑</span> Copy</div>
+                    <div class="dropdown-item" onclick="menuAction('paste')"><span class="menu-icon">📋</span> Paste</div>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" onclick="menuAction('select-all')">Select All</div>
+                    <div class="dropdown-item" onclick="menuAction('select-all')"><span class="menu-icon">☑</span> Select All</div>
                 </div>
             </div>
 
             <div class="menu-item" onclick="toggleMenu(event, 'palette')">Palette
                 <div class="dropdown" id="dropdown-palette">
-                    <div class="dropdown-item" onclick="setNotionMode('light')">Notion Light</div>
-                    <div class="dropdown-item" onclick="setNotionMode('beige')">Notion Beige</div>
-                    <div class="dropdown-item" onclick="setNotionMode('dark')">Notion Dark</div>
+                    <div class="dropdown-item" onclick="setNotionMode('light')"><span class="menu-icon">☀️</span> Luce</div>
+                    <div class="dropdown-item" onclick="setNotionMode('beige')"><span class="menu-icon">📜</span> Beige</div>
+                    <div class="dropdown-item" onclick="setNotionMode('dark')"><span class="menu-icon">🌙</span> Notte</div>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-item" onclick="setThemePalette('pink')">
-                        <span class="color-preview" style="background-color: #ECAABF;"></span> Rosa
+                        <span class="color-preview" style="background-color: #EBA8BB;"></span> Tema Rosa
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('purple')">
-                        <span class="color-preview" style="background-color: #C1A3D8;"></span> Viola
+                        <span class="color-preview" style="background-color: #D4A8EB;"></span> Tema Viola
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('blue')">
-                        <span class="color-preview" style="background-color: #A3B5D8;"></span> Blu
+                        <span class="color-preview" style="background-color: #A8BEEB;"></span> Tema Blu
                     </div>
                     <div class="dropdown-item" onclick="setThemePalette('green')">
-                        <span class="color-preview" style="background-color: #A3D8A8;"></span> Verde
+                        <span class="color-preview" style="background-color: #A8EBA8;"></span> Tema Verde
                     </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" onclick="setTextFont('pixel')"><span class="menu-icon">A</span> Font: Pixel</div>
+                    <div class="dropdown-item" onclick="setTextFont('arial')"><span class="menu-icon">A</span> Font: Arial</div>
                 </div>
             </div>
 
             <div class="menu-item" onclick="toggleMenu(event, 'help')">Help
                 <div class="dropdown" id="dropdown-help">
-                    <div class="dropdown-item" onclick="alert('Retro Pixel Notepad\nSenza PNG esterni!')">About</div>
+                    <div class="dropdown-item" onclick="alert('Notepad OS 7 - 100% CSS Code.\nDati salvati localmente.')"><span class="menu-icon">❓</span> About</div>
                 </div>
             </div>
         </div>
 
         <div class="window-body">
             <div class="textarea-container">
-                <textarea id="notepad-text" spellcheck="false" placeholder="Inizia a digitare qui..."></textarea>
+                <textarea id="notepad-text" spellcheck="false" placeholder="Scrivi i tuoi appunti qui..."></textarea>
             </div>
         </div>
     </div>
@@ -283,26 +285,32 @@
     <script>
         const textarea = document.getElementById('notepad-text');
 
-        // DATI LOCALI
-        textarea.value = localStorage.getItem('notion-retro-notepad-final') || '';
+        // --- SALVATAGGIO TESTO LOCALE ---
+        textarea.value = localStorage.getItem('notion-mac-notepad-v3') || '';
         textarea.addEventListener('input', () => {
-            localStorage.setItem('notion-retro-notepad-final', textarea.value);
+            localStorage.setItem('notion-mac-notepad-v3', textarea.value);
         });
 
-        // TEMI E MODALITÀ
+        // --- GESTIONE PREFERENZE GRAFICHE E FONT ---
         function setNotionMode(mode) {
             document.body.setAttribute('data-mode', mode);
-            localStorage.setItem('notion-notepad-mode-final', mode);
+            localStorage.setItem('notion-notepad-mode-v3', mode);
         }
         function setThemePalette(palette) {
             document.body.setAttribute('data-palette', palette);
-            localStorage.setItem('notion-notepad-palette-final', palette);
+            localStorage.setItem('notion-notepad-palette-v3', palette);
+        }
+        function setTextFont(fontType) {
+            document.body.setAttribute('data-font', fontType);
+            localStorage.setItem('notion-notepad-font-v3', fontType);
         }
 
-        setNotionMode(localStorage.getItem('notion-notepad-mode-final') || 'light');
-        setThemePalette(localStorage.getItem('notion-notepad-palette-final') || 'pink');
+        // Caricamento in fase di avvio
+        setNotionMode(localStorage.getItem('notion-notepad-mode-v3') || 'light');
+        setThemePalette(localStorage.getItem('notion-notepad-palette-v3') || 'pink');
+        setTextFont(localStorage.getItem('notion-notepad-font-v3') || 'pixel');
 
-        // MENÙ
+        // --- LOGICA DI APERTURA E CHIUSURA MENÙ ---
         function toggleMenu(event, menuName) {
             event.stopPropagation(); 
             document.querySelectorAll('.menu-item').forEach(item => {
@@ -315,13 +323,13 @@
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
         }
 
-        // AZIONI
+        // --- AZIONI DEI PULSANTI (File ed Edit) ---
         async function menuAction(action) {
             switch(action) {
                 case 'new':
-                    if(confirm("Vuoi cancellare tutto il testo?")) {
+                    if(confirm("Sei sicuro di voler svuotare il blocco note?")) {
                         textarea.value = '';
-                        localStorage.setItem('notion-retro-notepad-final', '');
+                        localStorage.setItem('notion-mac-notepad-v3', '');
                     }
                     break;
                 case 'save':
@@ -330,6 +338,12 @@
                     anchor.download = 'Nota_Rapida.txt';
                     anchor.href = window.URL.createObjectURL(blob);
                     anchor.click();
+                    break;
+                case 'undo':
+                    document.execCommand('undo'); // Comando nativo Undo
+                    break;
+                case 'redo':
+                    document.execCommand('redo'); // Comando nativo Redo
                     break;
                 case 'cut':
                     textarea.select();
@@ -346,9 +360,9 @@
                         const start = textarea.selectionStart;
                         const end = textarea.selectionEnd;
                         textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
-                        localStorage.setItem('notion-retro-notepad-final', textarea.value);
+                        localStorage.setItem('notion-mac-notepad-v3', textarea.value);
                     } catch (err) {
-                        alert("Usa la scorciatoia Ctrl+V (o Cmd+V) per incollare.");
+                        alert("Premi la scorciatoia Ctrl+V (o Cmd+V) sulla tastiera per incollare.");
                     }
                     break;
                 case 'select-all':
@@ -357,13 +371,14 @@
             }
         }
 
+        // --- IMPORTARE UN FILE ESTERNO ---
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 textarea.value = e.target.result;
-                localStorage.setItem('notion-retro-notepad-final', textarea.value);
+                localStorage.setItem('notion-mac-notepad-v3', textarea.value);
             };
             reader.readAsText(file);
             event.target.value = ''; 
