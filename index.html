@@ -195,19 +195,28 @@
             display: block;
         }
         
-        /* Gestione Font Area Testo (Aggiunto Caveat Aesthetic) */
+        /* Gestione Font Area Testo */
         [data-font="pixel"] #notepad-text { font-family: 'VT323', monospace; font-size: 26px; }
         [data-font="arial"] #notepad-text { font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.5; }
         [data-font="aesthetic"] #notepad-text { font-family: 'Caveat', cursive; font-size: 26px; line-height: 1.2; }
 
         /* --- SCROLLBAR XP Style --- */
-        #notepad-text::-webkit-scrollbar { width: 18px; background: #E1E1E1; }
-        #notepad-text::-webkit-scrollbar-track { background: #E1E1E1; border-left: 1px solid #BFBFBF; }
+        #notepad-text::-webkit-scrollbar { 
+            width: 18px; 
+            background: #E1E1E1; 
+            cursor: pointer;
+        }
+        #notepad-text::-webkit-scrollbar-track { 
+            background: #E1E1E1; 
+            border-left: 1px solid #BFBFBF; 
+            cursor: pointer;
+        }
         
         #notepad-text::-webkit-scrollbar-thumb { 
             background: linear-gradient(to right, #FFF 0%, var(--title-bg-end) 50%, var(--title-bg-end) 100%);
             border: 1px solid var(--win-frame);
             border-radius: 9px;
+            cursor: pointer;
         }
         
         #notepad-text::-webkit-scrollbar-button { 
@@ -215,6 +224,7 @@
             background-color: #E1E1E1;
             border: 1px solid #BFBFBF;
             border-radius: 4px;
+            cursor: pointer;
         }
         #notepad-text::-webkit-scrollbar-button:vertical:start:decrement { 
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polygon points="1,8 9,8 5,2" fill="black"/></svg>');
@@ -308,28 +318,28 @@
         const editor = document.getElementById('notepad-text');
 
         // --- SALVATAGGIO TESTO LOCALE (Formattazione HTML) ---
-        editor.innerHTML = localStorage.getItem('notion-xp-richtext-v7') || '';
+        editor.innerHTML = localStorage.getItem('notion-xp-richtext-v8') || '';
         editor.addEventListener('input', () => {
-            localStorage.setItem('notion-xp-richtext-v7', editor.innerHTML);
+            localStorage.setItem('notion-xp-richtext-v8', editor.innerHTML);
         });
 
         // --- GESTIONE PREFERENZE ---
         function setNotionMode(mode) {
             document.body.setAttribute('data-mode', mode);
-            localStorage.setItem('notion-notepad-mode-v7', mode);
+            localStorage.setItem('notion-notepad-mode-v8', mode);
         }
         function setThemePalette(palette) {
             document.body.setAttribute('data-palette', palette);
-            localStorage.setItem('notion-notepad-palette-v7', palette);
+            localStorage.setItem('notion-notepad-palette-v8', palette);
         }
         function setTextFont(fontType) {
             document.body.setAttribute('data-font', fontType);
-            localStorage.setItem('notion-notepad-font-v7', fontType);
+            localStorage.setItem('notion-notepad-font-v8', fontType);
         }
 
-        setNotionMode(localStorage.getItem('notion-notepad-mode-v7') || 'light');
-        setThemePalette(localStorage.getItem('notion-notepad-palette-v7') || 'pink');
-        setTextFont(localStorage.getItem('notion-notepad-font-v7') || 'pixel');
+        setNotionMode(localStorage.getItem('notion-notepad-mode-v8') || 'light');
+        setThemePalette(localStorage.getItem('notion-notepad-palette-v8') || 'pink');
+        setTextFont(localStorage.getItem('notion-notepad-font-v8') || 'pixel');
 
         // --- LOGICA MENÙ ---
         function toggleMenu(event, menuName) {
@@ -346,18 +356,16 @@
 
         // --- AZIONI RICH TEXT ---
         async function menuAction(action) {
-            // Focus forzato per evitare bug di selezione
             editor.focus();
             
             switch(action) {
                 case 'new':
                     if(confirm("Sei sicuro di voler svuotare il blocco note?")) {
                         editor.innerHTML = '';
-                        localStorage.setItem('notion-xp-richtext-v7', '');
+                        localStorage.setItem('notion-xp-richtext-v8', '');
                     }
                     break;
                 case 'save':
-                    // Esporta come testo semplice rimuovendo i tag per sicurezza
                     const blob = new Blob([editor.innerText], { type: 'text/plain' });
                     const anchor = document.createElement('a');
                     anchor.download = 'Nota_Rapida.txt';
@@ -388,7 +396,6 @@
                 case 'select-all':
                     document.execCommand('selectAll', false, null);
                     break;
-                // Nuove formattazioni:
                 case 'bold':
                     document.execCommand('bold', false, null);
                     break;
@@ -399,8 +406,7 @@
                     document.execCommand('underline', false, null);
                     break;
             }
-            // Aggiorna salvataggio locale post-formattazione
-            localStorage.setItem('notion-xp-richtext-v7', editor.innerHTML);
+            localStorage.setItem('notion-xp-richtext-v8', editor.innerHTML);
         }
 
         // --- IMPORTA FILE ---
@@ -409,9 +415,8 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                // Sostituisce i ritorni a capo testuali con <br> per l'HTML
                 editor.innerHTML = e.target.result.replace(/\n/g, "<br>");
-                localStorage.setItem('notion-xp-richtext-v7', editor.innerHTML);
+                localStorage.setItem('notion-xp-richtext-v8', editor.innerHTML);
             };
             reader.readAsText(file);
             event.target.value = ''; 
