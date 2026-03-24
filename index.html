@@ -4,23 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="darkreader-lock">
+    <meta name="color-scheme" content="light">
     
-    <title>Notepad Floating Edition - Final</title>
+    <title>Notepad XP/Retro - Rich Text Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Caveat:wght@500&display=swap" rel="stylesheet">
     <style>
-        /* TRASPARENZA ASSOLUTA PER FAR VEDERE NOTION */
-        html, body {
-            margin: 0; 
-            padding: 20px; /* Spazio vitale per non tagliare l'ombra 3D */
-            width: 100vw; height: 100vh;
-            box-sizing: border-box;
-            background-color: transparent !important; 
-            font-family: 'VT323', monospace;
-            display: flex; justify-content: center; align-items: center;
-            overflow: hidden; 
+        /* SCUDO CSS AGGIUNTIVO */
+        :root, html, body {
+            color-scheme: light !important;
+            forced-color-adjust: none !important;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
         }
 
         :root {
+            --page-bg: transparent; 
+            
             /* Palette Rosa (Default) */
             --win-frame: #A03050;      
             --title-bg-start: #FFDDEE; 
@@ -38,10 +37,19 @@
             --highlight-text: #ffffff;
         }
 
+        /* --- Sfondo di Notion (Modalità manuali) --- */
+        [data-mode="dark"] {
+            --page-bg: #191919;
+            --text-bg: #2a1a20; 
+            --text-color: #f0f0f0;
+        }
+        [data-mode="beige"] { --page-bg: #F7F6F3; }
+        [data-mode="light"] { --page-bg: #FFFFFF; }
+        [data-mode="transparent"] { --page-bg: transparent; }
+
         /* --- Palette Colori Dinamiche --- */
         [data-palette="pink"] {
             --title-bg-start: #FFDDEE; --title-bg-end: #F4AABF; --sys-bg: #F0BBD0; --text-bg: #FFF0F5;
-            --win-frame: #A03050;
         }
         [data-palette="green"] {
             --title-bg-start: #DDEEFF; --title-bg-end: #AAF4B1; --sys-bg: #BBF0BF; --text-bg: #F0FFF0;
@@ -56,6 +64,20 @@
             --win-frame: #5030A0;
         }
 
+        /* Aggiustamenti Dark mode per il testo */
+        [data-mode="dark"] #notepad-text { color: var(--page-bg); }
+
+        body, html {
+            margin: 0; padding: 10px;
+            width: 100vw; height: 100vh;
+            box-sizing: border-box;
+            background-color: var(--page-bg);
+            font-family: 'VT323', monospace;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; 
+            transition: background-color 0.3s ease;
+        }
+
         * { box-sizing: border-box; }
 
         /* --- LA FINESTRA PRINCIPALE --- */
@@ -64,8 +86,7 @@
             background-color: var(--sys-bg) !important;
             border: 3px solid var(--win-frame) !important;
             border-radius: 8px 8px 0 0;
-            /* L'ombra fluttuante che si appoggerà sullo sfondo di Notion */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: flex; flex-direction: column;
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
@@ -120,6 +141,7 @@
             font-size: 20px; color: #000 !important;
             background-color: var(--sys-bg) !important;
             border-bottom: 1px solid var(--border-shadow);
+            flex-wrap: wrap; /* FIX: Permette ai menù di andare a capo se restringi il blocco */
         }
         
         .menu-item {
@@ -139,7 +161,17 @@
             z-index: 100; color: #000 !important; padding: 2px;
             border-radius: 2px;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.3); 
+            max-height: 60vh; /* FIX: Evita che il menù sfondi il limite basso */
+            overflow-y: auto; 
         }
+
+        /* FIX: Forza gli ultimi due menù ad aprirsi verso sinistra */
+        .menu-item:nth-last-child(1) .dropdown,
+        .menu-item:nth-last-child(2) .dropdown {
+            left: auto;
+            right: 0;
+        }
+
         .menu-item.active .dropdown { display: flex; flex-direction: column; }
         
         .dropdown-item {
@@ -170,12 +202,11 @@
             display: flex;
             border-radius: 2px; 
             overflow: hidden;
-            transition: background-color 0.3s ease;
         }
 
         #notepad-text {
             flex-grow: 1; box-sizing: border-box;
-            background-color: transparent !important; 
+            background-color: transparent; 
             color: var(--text-color) !important;
             padding: 10px; outline: none; border: none;
             overflow-y: auto;
@@ -230,12 +261,12 @@
         }
     </style>
 </head>
-<body data-palette="pink" data-font="pixel">
+<body data-mode="transparent" data-palette="pink" data-font="pixel">
 
     <div class="window">
         <div class="title-bar">
             <div class="sys-icon-box"><div class="sys-icon-inner"></div></div>
-            <div class="title-text">Nota Rapida - Fluttuante!</div>
+            <div class="title-text">Nota Rapida - Rich Text Edition</div>
             <div class="window-btns">
                 <div class="win-btn"><div class="icon-min"></div></div>
                 <div class="win-btn"><div class="icon-max"></div></div>
@@ -281,6 +312,11 @@
 
             <div class="menu-item" onclick="toggleMenu(event, 'palette')">Palette
                 <div class="dropdown" id="dropdown-palette">
+                    <div class="dropdown-item" onclick="setNotionMode('transparent')"><span class="menu-icon">🪟</span> Sfondo Notion</div>
+                    <div class="dropdown-item" onclick="setNotionMode('light')"><span class="menu-icon">☀️</span> Luce</div>
+                    <div class="dropdown-item" onclick="setNotionMode('beige')"><span class="menu-icon">📜</span> Beige</div>
+                    <div class="dropdown-item" onclick="setNotionMode('dark')"><span class="menu-icon">🌙</span> Notte</div>
+                    <div class="dropdown-divider"></div>
                     <div class="dropdown-item" onclick="setThemePalette('pink')">
                         <span class="color-preview" style="background-color: #F0BBD0;"></span> Tema Rosa
                     </div>
@@ -308,23 +344,28 @@
         const editor = document.getElementById('notepad-text');
 
         // --- SALVATAGGIO TESTO LOCALE ---
-        editor.innerHTML = localStorage.getItem('notion-xp-richtext-v12') || '';
+        editor.innerHTML = localStorage.getItem('notion-xp-richtext-v10') || '';
         editor.addEventListener('input', () => {
-            localStorage.setItem('notion-xp-richtext-v12', editor.innerHTML);
+            localStorage.setItem('notion-xp-richtext-v10', editor.innerHTML);
         });
 
         // --- GESTIONE PREFERENZE ---
+        function setNotionMode(mode) {
+            document.body.setAttribute('data-mode', mode);
+            localStorage.setItem('notion-notepad-mode-v10', mode);
+        }
         function setThemePalette(palette) {
             document.body.setAttribute('data-palette', palette);
-            localStorage.setItem('notion-notepad-palette-v12', palette);
+            localStorage.setItem('notion-notepad-palette-v10', palette);
         }
         function setTextFont(fontType) {
             document.body.setAttribute('data-font', fontType);
-            localStorage.setItem('notion-notepad-font-v12', fontType);
+            localStorage.setItem('notion-notepad-font-v10', fontType);
         }
 
-        setThemePalette(localStorage.getItem('notion-notepad-palette-v12') || 'pink');
-        setTextFont(localStorage.getItem('notion-notepad-font-v12') || 'pixel');
+        setNotionMode(localStorage.getItem('notion-notepad-mode-v10') || 'transparent');
+        setThemePalette(localStorage.getItem('notion-notepad-palette-v10') || 'pink');
+        setTextFont(localStorage.getItem('notion-notepad-font-v10') || 'pixel');
 
         // --- LOGICA MENÙ ---
         function toggleMenu(event, menuName) {
@@ -347,7 +388,7 @@
                 case 'new':
                     if(confirm("Sei sicuro di voler svuotare il blocco note?")) {
                         editor.innerHTML = '';
-                        localStorage.setItem('notion-xp-richtext-v12', '');
+                        localStorage.setItem('notion-xp-richtext-v10', '');
                     }
                     break;
                 case 'save':
@@ -391,7 +432,7 @@
                     document.execCommand('underline', false, null);
                     break;
             }
-            localStorage.setItem('notion-xp-richtext-v12', editor.innerHTML);
+            localStorage.setItem('notion-xp-richtext-v10', editor.innerHTML);
         }
 
         // --- IMPORTA FILE ---
@@ -401,7 +442,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 editor.innerHTML = e.target.result.replace(/\n/g, "<br>");
-                localStorage.setItem('notion-xp-richtext-v12', editor.innerHTML);
+                localStorage.setItem('notion-xp-richtext-v10', editor.innerHTML);
             };
             reader.readAsText(file);
             event.target.value = ''; 
